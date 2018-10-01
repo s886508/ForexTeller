@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/ForexCralwer.iml" filepath="$PROJECT_DIR$/.idea/ForexCralwer.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/ForexTeller.iml" filepath="$PROJECT_DIR$/.idea/ForexTeller.iml" />
     </modules>
   </component>
 </project>
