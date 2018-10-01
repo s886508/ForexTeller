@@ -4,8 +4,8 @@ import requests
 
 def retrieveForexData():
     """Open ESun Bank forex site and get its html content."""
-    url_esun_forex = "https://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates"
-    respones = requests.get(url_esun_forex, verify = False)
+    url_esun_forex = "http://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates"
+    respones = requests.get(url_esun_forex)
 
     return respones.text
 
