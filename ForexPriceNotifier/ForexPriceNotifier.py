@@ -6,6 +6,10 @@ class ForexType(Enum):
     Buy = "Buy"
     Sell = "Sell"
 
+class PriceType(Enum):
+    Below = "Below"
+    Exceed = "Exceed"
+
 class ForexNotifier:
 
     def __init__(self, wanted_list, refresh_interval = 10000):
@@ -15,7 +19,7 @@ class ForexNotifier:
         self.currency_refresh_interval = refresh_interval #ms
         self.stop_ = False
 
-    def setNotify(self, currency_type, currency_price, forex_type):
+    def setNotify(self, currency_type, currency_price, forex_type, price_type):
         """
         Set notify condition when price reach the settings
 
@@ -33,28 +37,41 @@ class ForexNotifier:
             print("Currency string is empty.")
             return False
 
-        key = currency_type + "-" + str(forex_type.value)
+        key = self.composeCurrencyKey(currency_type, forex_type, price_type)
         self.currency_notify_dict[key] = currency_price
 
         return True
 
-    def retrieveForexAndNotify(self):
-        self.crawler_.retrieveForexData(self.crawler_.url_)
-        cur_currency_price_dict = self.crawler_.getCurrency(self.currency_wanted_list)
-        if len(self.currency_notify_dict) == 0:
-            print("Cannot get currency data. The tool will be stopped.")
+    def composeCurrencyKey(self, currency, forex_type, price_type):
+        return currency + "-" + str(forex_type.value) + "-" + str(price_type.value)
+
+    def matchCurrencyPrice(self, currency, price):
+        """
+        Check if given currency matches the set price.
+
+        Args:
+            currency (str): Currency to check if reach the set price.
+            price (float): Price to check the set value.
+        Returns:
+            Return True if matched the set price for given currency.
+        """
+        if self.currency_notify_dict.get(currency) == None:
+            print("The currency: %s does not call setNotify." % (currency))
             return False
-
-        for currency, price in self.currency_notify_dict.items():
-            if currency not in cur_currency_price_dict.keys():
-                print("The set currency: %s cannot be found from the site." % (currency))
-                return False
-            if "Buy" in currency and price >= self.currency_notify_dict[currency]:
-                self.notify(currency, price)
-            if "Sell" in currency and price <= self.currency_notify_dict[currency]:
-                self.notify(currency, price)
-
-        return True
+        if type(price) is not float and type(price) is not int:
+            print("Parameter type is wrong. Please check.")
+            return False
+        if "Buy" in currency:
+            if "Below" in currency and price <= self.currency_notify_dict[currency]:
+                return True
+            elif "Exceed" in currency and price >= self.currency_notify_dict[currency]:
+                return True
+        if "Sell" in currency:
+            if "Below" in currency and price <= self.currency_notify_dict[currency]:
+                return True
+            elif "Exceed" in currency and price >= self.currency_notify_dict[currency]:
+                return True
+        return False
 
     def notify(self, currency, price):
         message = "The following currency has reached set price:"
@@ -63,19 +80,37 @@ class ForexNotifier:
         return message
 
     def start(self):
+        """Loop for retrieving forex data from website and check if the set price is reached."""
         while len(self.currency_notify_dict) > 0:
             if self.stop_:
                 self.stop_ = False
                 break
 
-            self.retrieveForexAndNotify()
+            cur_currency_price = self.__retrieveWantedForex()
+            for currency, price in self.currency_notify_dict.items():
+                if currency not in cur_currency_price.keys():
+                    print("The set currency: %s cannot be found from the site." % (currency))
+                    continue
+                elif self.matchCurrencyPrice(currency, price):
+                    self.notify(currency, price)
+
             time.sleep(self.currency_refresh_interval / 1000)
 
     def stop(self):
         self.stop_ = True
 
+    def __retrieveWantedForex(self):
+        """Get forex data from website for wanted currency."""
+        self.crawler_.retrieveForexData(self.crawler_.url_)
+        cur_currency_price_dict = self.crawler_.getCurrency(self.currency_wanted_list)
+        if len(cur_currency_price_dict) == 0:
+            print("Cannot get currency data. The tool will be stopped.")
+            return {}
+
+        return cur_currency_price_dict
+
 if __name__ == "__main__":
     notifier = ForexNotifier(["美元(USD)", "日圓(JPY)"], 30 * 1000)
-    notifier.setNotify("美元(USD)", 30.4, ForexType.Sell)
-    notifier.setNotify("日圓(JPY)", 0.27, ForexType.Buy)
+    notifier.setNotify("美元(USD)", 30.4, ForexType.Sell, PriceType.Exceed)
+    notifier.setNotify("日圓(JPY)", 0.27, ForexType.Buy, PriceType.Below)
     notifier.start()
