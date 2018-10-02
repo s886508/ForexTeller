@@ -8,7 +8,7 @@ class ForexType(Enum):
 
 class ForexNotifier:
 
-    def __init__(self, wanted_list, refresh_interval):
+    def __init__(self, wanted_list, refresh_interval = 10000):
         self.crawler_ = ESunForexCrawler()
         self.currency_notify_dict = {}
         self.currency_wanted_list = wanted_list
@@ -27,6 +27,10 @@ class ForexNotifier:
         """
         if type(currency_price) is not float and type(currency_price) is not int:
             print("Parameter type is wrong. Please check.")
+            return False
+
+        if not currency_type:
+            print("Currency string is empty.")
             return False
 
         key = currency_type + "-" + str(forex_type.value)
