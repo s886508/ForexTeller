@@ -8,7 +8,16 @@ class ESunForexCrawler:
         self.html_text_ = ""
 
     def retrieveForexData(self, forex_url):
-        """Open ESun Bank forex site and get its html content."""
+        """Open ESun Bank forex site and get its html content.
+        Args:
+            forex_url (str): The website to get forex data.
+
+        Returns:
+             Return True if html content get successfully.
+        """
+        if len(forex_url) == 0:
+            return False
+
         respone = requests.get(forex_url)
         self.html_text_ = respone.text
         return len(self.html_text_) > 0
