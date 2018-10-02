@@ -1,44 +1,52 @@
 from bs4 import BeautifulSoup
-
 import requests
 
-def retrieveForexData():
-    """Open ESun Bank forex site and get its html content."""
-    url_esun_forex = "http://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates"
-    respones = requests.get(url_esun_forex)
+class ESunForexCrawler:
 
-    return respones.text
+    def __init__(self):
+        self.url_ = "http://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates"
+        self.html_text_ = ""
 
-#
-def getCurrency(html_text, currency_to_get):
-    """Open ESun Bank forex site and get its html content.
+    def retrieveForexData(self, forex_url):
+        """Open ESun Bank forex site and get its html content."""
+        respone = requests.get(forex_url)
+        self.html_text_ = respone.text
+        return len(self.html_text_) > 0
 
-    Args:
-        html_text (str): Forex site html content.
-        currency_to_get(list(str)): Currency string list to filter the data
+    def getCurrency(self, currency_to_get, html_text = None):
+        """Open ESun Bank forex site and get its html content.
 
-    Returns:
-        dict(str): Contains currency price of buy and sell.
-        {'美元(USD)-Buy': 30.535, '美元(USD)-Sell': 30.565}
+        Args:
+            currency_to_get(list(str)): Currency string list to filter the data
+            html_text (str): Forex site html content.
 
-    """
-    currency_dict = {}
-    soup = BeautifulSoup(html_text, "html.parser")
-    for html_str in soup.find_all("tr", class_="tableContent-light"):
-        list_currency = html_str.text.strip().split("\n")
-        if len(list_currency) < 5:
-            print("The html content may be changed. Please modify the parsing rules")
-            break
-        if list_currency[0] in currency_to_get:
-            currency_dict[list_currency[0] + "-Buy"] = float(list_currency[3])
-            currency_dict[list_currency[0] + "-Sell"] = float(list_currency[4])
+        Returns:
+            dict(str): Contains currency price of buy and sell.
+            {'美元(USD)-Buy': 30.535, '美元(USD)-Sell': 30.565}
 
-    return currency_dict
+        """
+        if html_text is None:
+            html_text = self.html_text_
+
+        currency_dict = {}
+        soup = BeautifulSoup(html_text, "html.parser")
+        for html_str in soup.find_all("tr", class_="tableContent-light"):
+            list_currency = html_str.text.strip().split("\n")
+            if len(list_currency) < 5:
+                print("The html content may be changed. Please modify the parsing rules")
+                break
+            if list_currency[0] in currency_to_get:
+                currency_dict[list_currency[0] + "-Buy"] = float(list_currency[3])
+                currency_dict[list_currency[0] + "-Sell"] = float(list_currency[4])
+
+        if len(currency_dict) == 0:
+            print("Cannot match given currency.")
+
+        return currency_dict
 
 
 if __name__ == "__main__":
-    html_text = retrieveForexData()
-    #print(html_text)
-    currency_dict = getCurrency(html_text, ["美元(USD)", "日圓(JPY)"])
-    #print(currency_dict)
+    crawler = ESunForexCrawler()
+    crawler.retrieveForexData(crawler.url_)
+    currency_dict = crawler.getCurrency(["美元(USD)", "日圓(JPY)"])
 
