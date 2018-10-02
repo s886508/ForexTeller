@@ -24,32 +24,41 @@ class ForexNotifier:
             forext_type (ForexType): Set the price for buying or selling.
 
         """
+        if type(currency_price) is not float and type(currency_price) is not int:
+            print("Parameter type is wrong. Please check.")
+            return False
+
         if forex_type == ForexType.Buy:
             key = currency_type + "-Buy"
         else:
             key = currency_type + "-Sell"
         self.currency_notify_dict[key] = currency_price
 
+        return True
+
     def retrieveForexAndNotify(self):
         html_text = ESunForexCrawler.retrieveForexData()
         cur_currency_price_dict = ESunForexCrawler.getCurrency(html_text, self.currency_wanted_list)
         if len(self.currency_notify_dict) == 0:
             print("Cannot get currency data. The tool will be stopped.")
-            return
+            return False
 
         for currency, price in self.currency_notify_dict.items():
             if currency not in cur_currency_price_dict.keys():
-                break
+                print("The set currency: %s cannot be found from the site.") % (currency)
+                return False
             if "Buy" in currency and price >= self.currency_notify_dict[currency]:
                 self.notify(currency, price)
-                break
             if "Sell" in currency and price <= self.currency_notify_dict[currency]:
                 self.notify(currency, price)
-                break
+
+        return True
 
     def notify(self, currency, price):
-        print("The following currency has reached set price:")
-        print("\t" + currency + " : " + str(price))
+        message = "The following currency has reached set price:"
+        message += "\t%s : %s" % (currency, str(price))
+        print(message)
+        return message
 
     def start(self):
         while len(self.currency_notify_dict) > 0:
@@ -66,4 +75,5 @@ class ForexNotifier:
 if __name__ == "__main__":
     notifier = ForexNotifier(["美元(USD)", "日圓(JPY)"], 30 * 1000)
     notifier.setNotify("美元(USD)", 30.4, ForexType.Sell)
+    notifier.setNotify("日圓(JPY)", 0.27, ForexType.Buy)
     notifier.start()
