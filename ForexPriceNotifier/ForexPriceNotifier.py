@@ -1,4 +1,4 @@
-from ForexCrawler import ESunForexCrawler
+from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 from enum import Enum
 import time
 
@@ -9,6 +9,7 @@ class ForexType(Enum):
 class ForexNotifier:
 
     def __init__(self, wanted_list, refresh_interval):
+        self.crawler_ = ESunForexCrawler()
         self.currency_notify_dict = {}
         self.currency_wanted_list = wanted_list
         self.currency_refresh_interval = refresh_interval #ms
@@ -28,21 +29,21 @@ class ForexNotifier:
             print("Parameter type is wrong. Please check.")
             return False
 
-        key = currency_type + "-" + forex_type
+        key = currency_type + "-" + str(forex_type.value)
         self.currency_notify_dict[key] = currency_price
 
         return True
 
     def retrieveForexAndNotify(self):
-        html_text = ESunForexCrawler.retrieveForexData()
-        cur_currency_price_dict = ESunForexCrawler.getCurrency(html_text, self.currency_wanted_list)
+        self.crawler_.retrieveForexData(self.crawler_.url_)
+        cur_currency_price_dict = self.crawler_.getCurrency(self.currency_wanted_list)
         if len(self.currency_notify_dict) == 0:
             print("Cannot get currency data. The tool will be stopped.")
             return False
 
         for currency, price in self.currency_notify_dict.items():
             if currency not in cur_currency_price_dict.keys():
-                print("The set currency: %s cannot be found from the site.") % (currency)
+                print("The set currency: %s cannot be found from the site." % (currency))
                 return False
             if "Buy" in currency and price >= self.currency_notify_dict[currency]:
                 self.notify(currency, price)
