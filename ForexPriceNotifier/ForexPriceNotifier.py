@@ -88,7 +88,8 @@ class ForexNotifier:
 
             cur_currency_price = self.__retrieveWantedForex()
             for currency, price in self.currency_notify_dict.items():
-                if currency not in cur_currency_price.keys():
+                tmp = currency.replace("-Exceed", "").replace("-Below", "")
+                if tmp not in cur_currency_price.keys():
                     print("The set currency: %s cannot be found from the site." % (currency))
                     continue
                 elif self.matchCurrencyPrice(currency, price):
