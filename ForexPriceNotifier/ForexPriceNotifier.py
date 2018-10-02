@@ -3,8 +3,8 @@ from enum import Enum
 import time
 
 class ForexType(Enum):
-    Buy = 0
-    Sell = 1
+    Buy = "Buy"
+    Sell = "Sell"
 
 class ForexNotifier:
 
@@ -28,10 +28,7 @@ class ForexNotifier:
             print("Parameter type is wrong. Please check.")
             return False
 
-        if forex_type == ForexType.Buy:
-            key = currency_type + "-Buy"
-        else:
-            key = currency_type + "-Sell"
+        key = currency_type + "-" + forex_type
         self.currency_notify_dict[key] = currency_price
 
         return True
