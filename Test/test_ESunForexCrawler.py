@@ -48,3 +48,27 @@ class TestCrawler(object):
         # Case 4
         ret = crawler.getCurrency([""], html_text)
         assert len(ret) == 0
+
+    def test_getTime(self):
+        # Case 1: Normal
+        html_text = """<div id="layout_0_rightcontent_2_ph_tabcontent_0_timeBlock" class="timeBlock">
+                        <img src="/bank/images/esunbank/public/icon_time.png" border="0">生效日期：<span id="LbQuoteTime">2018年10月02日 09:06:13</span>
+                        <a id="layout_0_rightcontent_2_ph_tabcontent_0_HlkForeignExchangeRates" class="green linkover" href="/bank/personal/deposit/rate/forex/foreign-exchange-rates" style="padding-left:15px;">更新報價</a>
+                        </div>"""
+
+        crawler = ESunForexCrawler()
+        time = crawler.getEffectiveTime(html_text)
+        assert time == "2018年10月02日 09:06:13"
+
+        # Case 2: No span tag
+        html_text = """<div id="layout_0_rightcontent_2_ph_tabcontent_0_timeBlock" class="timeBlock">
+                                <img src="/bank/images/esunbank/public/icon_time.png" border="0">生效日期：
+                                <a id="layout_0_rightcontent_2_ph_tabcontent_0_HlkForeignExchangeRates" class="green linkover" href="/bank/personal/deposit/rate/forex/foreign-exchange-rates" style="padding-left:15px;">更新報價</a>
+                                </div>"""
+
+        time = crawler.getEffectiveTime(html_text)
+        assert len(time) == 0
+
+        # Case 3: Empty html text
+        time = crawler.getEffectiveTime("")
+        assert len(time) == 0

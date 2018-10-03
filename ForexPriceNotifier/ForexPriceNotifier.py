@@ -73,9 +73,22 @@ class ForexNotifier:
                 return True
         return False
 
-    def notify(self, currency, price):
-        message = "The following currency has reached set price:"
-        message += "\t%s : %s" % (currency, str(price))
+    def notifyIfRequired(self, currency_dict, date_time):
+        message = ""
+        currency_msg = ""
+        for currency, price in self.currency_notify_dict.items():
+            tmp = currency.replace("-Exceed", "").replace("-Below", "")
+            if tmp not in currency_dict.keys():
+                print("The set currency: %s cannot be found from the site." % (currency))
+                continue
+            elif self.matchCurrencyPrice(currency, price):
+                currency_msg += "\t%s : %s\n" % (currency, str(price))
+
+        if len(currency_msg) > 0:
+            message = "Current time: %s\n" % (date_time)
+            message += "The following currency has reached set price:\n"
+            message += currency_msg
+
         print(message)
         return message
 
@@ -86,23 +99,16 @@ class ForexNotifier:
                 self.stop_ = False
                 break
 
-            cur_currency_price = self.__retrieveWantedForex()
-            for currency, price in self.currency_notify_dict.items():
-                tmp = currency.replace("-Exceed", "").replace("-Below", "")
-                if tmp not in cur_currency_price.keys():
-                    print("The set currency: %s cannot be found from the site." % (currency))
-                    continue
-                elif self.matchCurrencyPrice(currency, price):
-                    self.notify(currency, price)
+            self.crawler_.retrieveForexData(self.crawler_.url_)
+            self.notifyIfRequired(self.__retrieveWantedCurrency(), self.crawler_.getEffectiveTime())
 
             time.sleep(self.currency_refresh_interval / 1000)
 
     def stop(self):
         self.stop_ = True
 
-    def __retrieveWantedForex(self):
+    def __retrieveWantedCurrency(self):
         """Get forex data from website for wanted currency."""
-        self.crawler_.retrieveForexData(self.crawler_.url_)
         cur_currency_price_dict = self.crawler_.getCurrency(self.currency_wanted_list)
         if len(cur_currency_price_dict) == 0:
             print("Cannot get currency data. The tool will be stopped.")

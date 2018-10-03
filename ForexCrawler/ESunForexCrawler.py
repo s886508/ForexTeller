@@ -22,6 +22,24 @@ class ESunForexCrawler:
         self.html_text_ = respone.text
         return len(self.html_text_) > 0
 
+    def getEffectiveTime(self, html_text = None):
+        """Get currency effective date and time.
+
+        Args: html_text (str) :Forex site html content.
+
+        Returns:
+            Return the time string if parsed. Otherwise, return empty string.
+
+        """
+        if html_text is None:
+            html_text = self.html_text_
+
+        soup = BeautifulSoup(html_text, "html.parser")
+        time = soup.find("span", id="LbQuoteTime")
+        if time is None:
+            return ""
+        return time.text
+
     def getCurrency(self, currency_to_get, html_text = None):
         """Open ESun Bank forex site and get its html content.
 
@@ -58,4 +76,5 @@ if __name__ == "__main__":
     crawler = ESunForexCrawler()
     crawler.retrieveForexData(crawler.url_)
     currency_dict = crawler.getCurrency(["美元(USD)", "日圓(JPY)"])
+    time = crawler.getEffectiveTime()
 
