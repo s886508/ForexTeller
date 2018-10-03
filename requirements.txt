@@ -1,0 +1,5 @@
+requests
+BeautifulSoup4
+pytest
+line-bot-sdk
+flask
