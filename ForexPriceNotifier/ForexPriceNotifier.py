@@ -19,14 +19,15 @@ class ForexNotifier:
         self.currency_refresh_interval = refresh_interval #ms
         self.stop_ = False
 
-    def setNotify(self, currency_type, currency_price, forex_type, price_type):
+    def addNotify(self, currency_type, currency_price, forex_type, price_type):
         """
         Set notify condition when price reach the settings
 
         Args:
             currency_type (str): Currency type to set target price. eg. 美元(USD)
             currency_price (float): Target currency price.
-            forext_type (ForexType): Set the price for buying or selling.
+            forex_type (ForexType): Set the price for buying or selling.
+            price_type (PriceType): The type indicates notify when exceed or below target price.
 
         """
         if type(currency_price) is not float and type(currency_price) is not int:
@@ -39,6 +40,29 @@ class ForexNotifier:
 
         key = self.composeCurrencyKey(currency_type, forex_type, price_type)
         self.currency_notify_dict[key] = currency_price
+
+        return True
+
+    def removeNotify(self, currency_type, forex_type, price_type):
+        """
+        Remove set notify currency.
+
+        Args:
+            currency_type (str): Currency type to remove target price. eg. 美元(USD)
+            forex_type (ForexType): The price for buying or selling.
+            price_type (PriceType): The type indicates notify when exceed or below target price.
+
+        """
+        if not currency_type:
+            print("Currency string is empty.")
+            return False
+
+        key = self.composeCurrencyKey(currency_type, forex_type, price_type)
+        if key not in self.currency_notify_dict.keys():
+            print("You have not set the notify condition yet.")
+            return False
+        price = self.currency_notify_dict.pop(key)
+        print("The notify has been removed: %s %f" % (key, price))
 
         return True
 
@@ -76,13 +100,15 @@ class ForexNotifier:
     def notifyIfRequired(self, currency_dict, date_time):
         message = ""
         currency_msg = ""
+        num = 1
         for currency, price in self.currency_notify_dict.items():
             tmp = currency.replace("-Exceed", "").replace("-Below", "")
             if tmp not in currency_dict.keys():
                 print("The set currency: %s cannot be found from the site." % (currency))
                 continue
             elif self.matchCurrencyPrice(currency, price):
-                currency_msg += "\t%s : %s\n" % (currency, str(price))
+                currency_msg += "\t%d.  %s : %s\n" % (num, currency, str(price))
+                num += 1
 
         if len(currency_msg) > 0:
             message = "Current time: %s\n" % (date_time)
@@ -107,6 +133,16 @@ class ForexNotifier:
     def stop(self):
         self.stop_ = True
 
+    def showNotifyCurrency(self):
+        """Display set notify currency"""
+        if len(self.currency_notify_dict) == 0:
+            print("You have not set any currency for notifier.")
+
+        print("Currency to notify now:")
+        for currency, price in self.currency_notify_dict.items():
+            print("\t%s : %s" % (currency, price))
+
+
     def __retrieveWantedCurrency(self):
         """Get forex data from website for wanted currency."""
         cur_currency_price_dict = self.crawler_.getCurrency(self.currency_wanted_list)
@@ -118,6 +154,7 @@ class ForexNotifier:
 
 if __name__ == "__main__":
     notifier = ForexNotifier(["美元(USD)", "日圓(JPY)"], 30 * 1000)
-    notifier.setNotify("美元(USD)", 30.4, ForexType.Sell, PriceType.Exceed)
-    notifier.setNotify("日圓(JPY)", 0.27, ForexType.Buy, PriceType.Below)
+    notifier.addNotify("美元(USD)", 30.4, ForexType.Sell, PriceType.Exceed)
+    notifier.addNotify("日圓(JPY)", 0.27, ForexType.Buy, PriceType.Below)
+    notifier.showNotifyCurrency()
     notifier.start()
