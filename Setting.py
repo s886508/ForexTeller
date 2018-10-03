@@ -1,2 +1,0 @@
-line_access_token = "sNFNZcYNbMnDkZYlYaXZrMHIpqcsd6mCqsM7Kz/mtuklZ1vtvQCkigsZEoQoDRSfIxRw0IAcRztBuPBSMMm7cHwJlGUuEvgx3eoffgo1Eowdz8ETgtoBYmalFOIIs65VJL5OP00fG2CLtEo3dsPkKgdB04t89/1O/w1cDnyilFU="
-line_token_secret = "a54182c06bb6e58771f9cc5e573856be"
