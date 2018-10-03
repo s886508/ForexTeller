@@ -16,7 +16,6 @@ app = Flask(__name__)
 line_bot_api = LineBotApi(Setting.line_access_token)
 handler = WebhookHandler(Setting.line_token_secret)
 
-
 @app.route("/callback", methods=['POST'])
 def callback():
     # get X-Line-Signature header value
