@@ -55,7 +55,6 @@ def handle_setting_message(event):
     :param
         event (object): Messages Event from Line Server
     """
-    line_bot.replyMessage(event.reply_token, "開始剖析設定值")
     tokens = event.message.text.split(" ")
     if len(tokens) >= 5:
         forex_type = ForexType.get_type(tokens[1])
@@ -64,7 +63,7 @@ def handle_setting_message(event):
         price = float(tokens[4])
 
     if forex_type is None or currency_type is None or price_type is None or price is None:
-        line_bot.replyMessage(event.reply_token, "設定格式錯誤\n範例: '設定 買入 美元 低於 30.4'")
+        line_bot.replyMessage(event.source.user_id, "設定格式錯誤\n範例: '設定 買入 美元 低於 30.4'")
     elif line_bot.addNotifyCurrency(event.source.user_id, currency_type, price, forex_type, price_type):
         line_bot.replyMessage(event.reply_token, "成功設定通知")
     else:
