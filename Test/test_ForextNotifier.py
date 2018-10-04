@@ -5,7 +5,8 @@ from ForexPriceNotifier.ForexPriceNotifier import PriceType
 
 class TestNotifier(object):
     def test_NotifySetting(self):
-        notifier = ForexNotifier(["美元(USD)"])
+        notifier = ForexNotifier()
+        notifier.addWantedCurrency("美元(USD)")
 
         # Case 1: Normal
         ret = notifier.addNotify("美元(USD)", 30.0, ForexType.Buy, PriceType.Below)
@@ -19,8 +20,16 @@ class TestNotifier(object):
         ret = notifier.addNotify("", "30.0", ForexType.Buy, PriceType.Exceed)
         assert ret == False
 
+        # Case 4: Incorrect type input
+        ret = notifier.addNotify("美元(USD)", 30.0, PriceType.Exceed, PriceType.Exceed)
+        assert ret == False
+
+        ret = notifier.addNotify("美元(USD)", 30.0, ForexType.Buy, ForexType.Buy)
+        assert ret == False
+
     def testMatchPrice(self):
-        notifier = ForexNotifier(["美元(USD)"])
+        notifier = ForexNotifier()
+        notifier.addWantedCurrency("美元(USD)")
 
         key = notifier.composeCurrencyKey("美元(USD)", ForexType.Sell, PriceType.Exceed)
 
@@ -42,12 +51,13 @@ class TestNotifier(object):
         ret = notifier.matchCurrencyPrice("(USD)", 30.4)
         assert ret == False
 
-        # Case 3: Incorrect price type
+        # Case 4: Incorrect price type
         ret = notifier.matchCurrencyPrice(key, "30.4")
         assert ret == False
 
     def testRemoveNotify(self):
-        notifier = ForexNotifier(["美元(USD)"])
+        notifier = ForexNotifier()
+        notifier.addWantedCurrency("美元(USD)")
 
         # Case 1: Normal
         notifier.addNotify("美元(USD)", 30.0, ForexType.Buy, PriceType.Below)

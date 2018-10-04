@@ -1,5 +1,6 @@
 from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 from enum import Enum
+from abc import ABCMeta, abstractmethod
 import time
 
 class ForexType(Enum):
@@ -10,14 +11,29 @@ class PriceType(Enum):
     Below = "Below"
     Exceed = "Exceed"
 
+class ForexSubscriber:
+    @abstractmethod
+    def update(self, message):
+        pass
+
 class ForexNotifier:
 
-    def __init__(self, wanted_list, refresh_interval = 10000):
+    def __init__(self, refresh_interval = 10000):
         self.crawler_ = ESunForexCrawler()
         self.currency_notify_dict = {}
-        self.currency_wanted_list = wanted_list
+        self.currency_wanted_list = []
         self.currency_refresh_interval = refresh_interval #ms
         self.stop_ = False
+        self.subscribers_set_ = set()
+
+    def addSubscriber(self, subscriber):
+        self.subscribers_set_.add(subscriber)
+
+    def removeSubscriber(self, subscriber):
+        self.subscribers_set_.discard(subscriber)
+
+    def addWantedCurrency(self, currency_type):
+        self.currency_wanted_list.append(currency_type)
 
     def addNotify(self, currency_type, currency_price, forex_type, price_type):
         """
@@ -29,6 +45,9 @@ class ForexNotifier:
             forex_type (ForexType): Set the price for buying or selling.
             price_type (PriceType): The type indicates notify when exceed or below target price.
 
+        Returns:
+            Return True if adding currency successfully.
+
         """
         if type(currency_price) is not float and type(currency_price) is not int:
             print("Parameter type is wrong. Please check.")
@@ -36,6 +55,14 @@ class ForexNotifier:
 
         if not currency_type:
             print("Currency string is empty.")
+            return False
+
+        if type(forex_type) is not ForexType:
+            print("Forex Type is wrong.")
+            return False
+
+        if type(price_type) is not PriceType:
+            print("Price Type is wrong.")
             return False
 
         key = self.composeCurrencyKey(currency_type, forex_type, price_type)
@@ -114,6 +141,8 @@ class ForexNotifier:
             message = "Current time: %s\n" % (date_time)
             message += "The following currency has reached set price:\n"
             message += currency_msg
+            for subscriber in self.subscribers_set_:
+                subscriber.update(message)
 
         print(message)
         return message
@@ -125,8 +154,9 @@ class ForexNotifier:
                 self.stop_ = False
                 break
 
-            self.crawler_.retrieveForexData(self.crawler_.url_)
-            self.notifyIfRequired(self.__retrieveWantedCurrency(), self.crawler_.getEffectiveTime())
+            if len(self.currency_wanted_list) > 0:
+                self.crawler_.retrieveForexData(self.crawler_.url_)
+                self.notifyIfRequired(self.__retrieveWantedCurrency(), self.crawler_.getEffectiveTime())
 
             time.sleep(self.currency_refresh_interval / 1000)
 
