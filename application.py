@@ -50,6 +50,8 @@ def handle_message(event):
         handle_add_setting(event)
     elif event.message.text.startswith("取消"):
         handle_remove_setting(event)
+    elif "目前設定" in event.message.text:
+        handle_current_setting(event);
 
 
 def handle_add_setting(event):
@@ -90,6 +92,13 @@ def handle_remove_setting(event):
         line_bot.replyMessage(event.reply_token, "成功設定-不通知")
     else:
         line_bot.replyMessage(event.reply_token, "設定失敗")
+
+def handle_current_setting(event):
+    """Display current currency setting.
+    :param
+        event (object): Messages Event from Line Server
+    """
+    line_bot.replyMessage(event.reply_token, line_bot.get_notify_currency_info(event.source.user_id))
 
 if __name__ == "__main__":
     #line_bot.addNotifyCurrency(CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)

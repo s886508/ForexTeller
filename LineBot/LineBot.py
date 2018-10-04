@@ -64,6 +64,10 @@ class ForexNotifierLineBot(ForexSubscriber):
     def get_notify_user_count(self):
         return len(self.__notify_user_ids)
 
+    def get_notify_currency_info(self, user_id):
+        return self.__notifier.get_notify_currency_info(user_id)
+
+
 if __name__ == "__main__":
     bot = ForexNotifierLineBot()
     bot.addNotifyCurrency(0, CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)

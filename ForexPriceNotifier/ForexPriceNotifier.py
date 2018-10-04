@@ -163,18 +163,28 @@ class ForexNotifier:
     def stop(self):
         self.stop_ = True
 
-    def showNotifyCurrency(self):
+    def get_notify_currency_info(self, user_id):
         """Display set notify currency"""
-        if len(self.currency_notify_dict) == 0:
-            print("You have not set any currency for notifier.")
+        info = ""
+        if not self.currency_notify_dict.get(user_id) or len(self.currency_notify_dict[user_id]) == 0:
+            info = "尚未設定任何通知"
+        else:
+            info = "目前設定通知:\n"
+            num = 1
+            for currency, price in self.currency_notify_dict[user_id].items():
+                index = currency.find("-")
+                index2 = currency.find("-", index + 1)
+                info += "%d. %s %s %s %s\n" % (num, PriceType.get_type(currency[index + 1: index2]),
+                        CurrencyType.get_type(currency[:index]),
+                        ForexType.get_type(currency[index2 + 1:]), str(price))
+                num += 1
 
-        print("Currency to notify now:")
-        for currency, price in self.currency_notify_dict.items():
-            print("\t%s : %s" % (currency, price))
+        return info
 
 if __name__ == "__main__":
     notifier = ForexNotifier(30 * 1000)
     notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Sell, PriceType.Exceed)
-    #notifier.addNotify(0, CurrencyType.JPY, 0.27, ForexType.Buy, PriceType.Below)
-    notifier.showNotifyCurrency()
+    notifier.addNotify(0, CurrencyType.JPY, 0.27, ForexType.Buy, PriceType.Below)
+    print(notifier.get_notify_currency_info(0))
+    print(notifier.get_notify_currency_info(1))
     notifier.start(ESunForexCrawler())
