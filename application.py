@@ -66,7 +66,7 @@ def handle_add_setting(event):
         price = float(tokens[4])
 
     if forex_type is None or currency_type is None or price_type is None or price is None:
-        line_bot.replyMessage(event.source.user_id, "設定格式錯誤\n範例: '設定 買入 美元 低於 30.4'")
+        line_bot.replyMessage(event.reply_token, "設定格式錯誤\n範例: '設定 買入 美元 低於 30.4'")
     elif line_bot.addNotifyCurrency(event.source.user_id, currency_type, price, forex_type, price_type):
         line_bot.replyMessage(event.reply_token, "成功設定-通知")
     else:
@@ -77,15 +77,15 @@ def handle_remove_setting(event):
     :param
         event (object): Messages Event from Line Server
     """
-    forex_type, currency_type, price_type, price = None, None, None, None
+    forex_type, currency_type, price_type = None, None, None
     tokens = event.message.text.split(" ")
     if len(tokens) >= 4:
         forex_type = ForexType.get_type(tokens[1])
         currency_type = CurrencyType.get_type(tokens[2])
         price_type = PriceType.get_type(tokens[3])
 
-    if forex_type is None or currency_type is None or price_type is None or price is None:
-        line_bot.replyMessage(event.source.user_id, "設定格式錯誤\n範例: '取消 買入 美元 低於'")
+    if forex_type is None or currency_type is None or price_type is None:
+        line_bot.replyMessage(event.reply_token, "設定格式錯誤\n範例: '取消 買入 美元 低於'")
     elif line_bot.removeNotifyCurrency(event.source.user_id, currency_type, forex_type, price_type):
         line_bot.replyMessage(event.reply_token, "成功設定-不通知")
     else:
