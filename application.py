@@ -42,7 +42,8 @@ def handle_message(event):
         if line_bot.get_notify_user_count() > 0:
             line_bot.run()
     elif "停止" == event.message.text:
-        line_bot.replyMessage(event.reply_token, "停止偵測價格與通知。")
+        line_bot.replyMessage(event.reply_token, "停止偵測價格與通知")
+        line_bot.removeUserId(event.source.user_id)
         if line_bot.get_notify_user_count() == 0:
             line_bot.stop()
     elif event.message.text.startswith("設定"):
