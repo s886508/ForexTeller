@@ -31,7 +31,7 @@ class ForexNotifierLineBot(ForexSubscriber):
 
     def run(self):
         if self.__worker_thread is None:
-            self.__worker_thread = threading.Thread(target=self.__notifier.start())
+            self.__worker_thread = threading.Thread(target=self.__notifier.start)
             self.__worker_thread.start()
 
     def stop(self):
