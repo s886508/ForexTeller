@@ -36,11 +36,11 @@ def callback():
 
 @webhook_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if "Start" in event.message.text:
+    if "啟動" is event.message.text:
         line_bot.replyMessage(event.reply_token, "開始偵測資料與推送")
         line_bot.addUserId(event.source.user_id)
         line_bot.run()
-    elif "Stop" in event.message.text:
+    elif "停止" is event.message.text:
         line_bot.replyMessage(event.reply_token, "停止偵測資料與推送")
         line_bot.stop()
 

@@ -83,10 +83,10 @@ class ForexNotifier:
 
         key = self.composeCurrencyKey(currency_type, forex_type, price_type)
         if key not in self.currency_notify_dict.keys():
-            print("You have not set the notify condition yet.")
+            print("尚未設定任何通知。")
             return False
         price = self.currency_notify_dict.pop(key)
-        print("The notify has been removed: %s %f" % (key, price))
+        print("通知已移除: %s %f" % (key, price))
 
         return True
 
@@ -128,15 +128,15 @@ class ForexNotifier:
         for currency, price in self.currency_notify_dict.items():
             tmp = currency.replace("-Exceed", "").replace("-Below", "")
             if tmp not in currency_dict.keys():
-                print("The set currency: %s cannot be found from the site." % (currency))
+                print("幣別無法由資料中取得: %s" % (currency))
                 continue
             elif self.matchCurrencyPrice(currency, price):
                 currency_msg += "\t%d.  %s : %s\n" % (num, currency, str(price))
                 num += 1
 
         if len(currency_msg) > 0:
-            message = "Current time: %s\n" % (date_time)
-            message += "The following currency has reached set price:\n"
+            message = "當前報價時間: %s\n" % (date_time)
+            message += "到價通知:\n"
             message += currency_msg
             for subscriber in self.subscribers_set_:
                 subscriber.update(message)
