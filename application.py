@@ -57,10 +57,10 @@ def handle_setting_message(event):
     line_bot.replyMessage(event.reply_token, "開始剖析設定值")
     tokens = event.message.text.split(" ")
     if len(tokens) >= 5:
-        forex_type = ForexType.getType(tokens[1].strip())
-        currency_type = CurrencyType.getType(tokens[2].strip())
-        price_type = PriceType.getType(tokens[3].strip())
-        price = float(tokens[4].strip())
+        forex_type = ForexType.get_type(tokens[1])
+        currency_type = CurrencyType.get_type(tokens[2])
+        price_type = PriceType.get_type(tokens[3])
+        price = float(tokens[4])
 
     if forex_type is None or currency_type is None or price_type is None or price is None:
         line_bot.replyMessage(event.reply_token, "設定格式錯誤\n範例: '設定 買入 美元 低於 30.4'")
@@ -71,6 +71,6 @@ def handle_setting_message(event):
 
 if __name__ == "__main__":
     #line_bot.addNotifyCurrency(CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)
-    line_bot.run()
-    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
+    #line_bot.run()
+    #app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     line_bot.stop()
