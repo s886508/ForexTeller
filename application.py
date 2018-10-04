@@ -35,19 +35,18 @@ def callback():
     return 'OK'
 
 @webhook_handler.add(MessageEvent, message=TextMessage)
-def handle_message(self, event):
-    #line_bot.line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.message.text))
+def handle_message(event):
     if "Start" in event.message.text:
+        line_bot.replyMessage(event.reply_token, "開始偵測資料與推送")
         line_bot.addUserId(event.source.user_id)
         line_bot.run()
-        line_bot.replyMessage(event.reply_token, "Start: user_id = %s" % (event.source.user_id))
     elif "Stop" in event.message.text:
+        line_bot.replyMessage(event.reply_token, "停止偵測資料與推送")
         line_bot.stop()
-        line_bot.replyMessage(event.reply_token, "Stop: user_id = %s" % (event.source.user_id))
 
 
 if __name__ == "__main__":
     line_bot.addNotifyCurrency("美元(USD)", 30.6, ForexType.Sell, PriceType.Exceed)
     #line_bot.run()
-    app.run(host="0.0.0.0", port=os.environ.get("PORT", 5000))
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     line_bot.stop()

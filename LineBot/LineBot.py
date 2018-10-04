@@ -24,10 +24,10 @@ class ForexNotifierLineBot(ForexSubscriber):
         self.__notifier.addWantedCurrency(currency_type)
         self.__notifier.addNotify(currency_type, currency_price, forex_type, price_type)
 
-    def update(self, message):
-        print(message)
+    def update(self, msg):
+        print(msg)
         for user_id in self.__line_user_ids:
-            self.__line_bot_api.push_message(user_id, message)
+            self.__line_bot_api.push_message(user_id, TextSendMessage(msg))
 
     def run(self):
         if self.__worker_thread == None:
@@ -45,5 +45,5 @@ class ForexNotifierLineBot(ForexSubscriber):
     def removeUserId(self, user_id):
         self.__line_user_ids.discard(user_id)
 
-    def replyMessage(self, reply_token, message):
-        self.__line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
+    def replyMessage(self, reply_token, msg):
+        self.__line_bot_api.reply_message(reply_token, TextSendMessage(text=msg))
