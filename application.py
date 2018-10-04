@@ -65,7 +65,8 @@ def handle_setting_message(event):
         line_bot.replyMessage(event.reply_token, "設定格式錯誤\n範例: '設定 買入 美元 低於 30.4'")
     elif line_bot.addNotifyCurrency(currency_type, price, forex_type, price_type):
         line_bot.replyMessage(event.reply_token, "成功設定通知")
-
+    else:
+        line_bot.replyMessage(event.reply_token, "設定通知失敗")
 
 if __name__ == "__main__":
     #line_bot.addNotifyCurrency(CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)
