@@ -26,6 +26,9 @@ class ForexNotifierLineBot(ForexSubscriber):
     def addNotifyCurrency(self, user_id, currency_type, currency_price, forex_type, price_type):
         return self.__notifier.addNotify(user_id, currency_type, currency_price, forex_type, price_type)
 
+    def removeNotifyCurrency(self, user_id, currency_type, forex_type, price_type):
+        return self.__notifier.removeNotify(user_id, currency_type, forex_type, price_type)
+
     def update(self, user_id, msg):
         print(msg)
         if user_id in self.__notify_user_ids:

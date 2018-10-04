@@ -47,14 +47,17 @@ def handle_message(event):
         if line_bot.get_notify_user_count() == 0:
             line_bot.stop()
     elif event.message.text.startswith("設定"):
-        handle_setting_message(event)
+        handle_add_setting(event)
+    elif event.message.text.startswith("取消"):
+        handle_remove_setting(event)
 
 
-def handle_setting_message(event):
-    """Parse setting messages.
+def handle_add_setting(event):
+    """Handle add setting messages.
     :param
         event (object): Messages Event from Line Server
     """
+    forex_type, currency_type, price_type, price = None, None, None, None
     tokens = event.message.text.split(" ")
     if len(tokens) >= 5:
         forex_type = ForexType.get_type(tokens[1])
@@ -65,9 +68,28 @@ def handle_setting_message(event):
     if forex_type is None or currency_type is None or price_type is None or price is None:
         line_bot.replyMessage(event.source.user_id, "設定格式錯誤\n範例: '設定 買入 美元 低於 30.4'")
     elif line_bot.addNotifyCurrency(event.source.user_id, currency_type, price, forex_type, price_type):
-        line_bot.replyMessage(event.reply_token, "成功設定通知")
+        line_bot.replyMessage(event.reply_token, "成功設定-通知")
     else:
-        line_bot.replyMessage(event.reply_token, "設定通知失敗")
+        line_bot.replyMessage(event.reply_token, "設定失敗")
+
+def handle_remove_setting(event):
+    """Handle remove setting messages.
+    :param
+        event (object): Messages Event from Line Server
+    """
+    forex_type, currency_type, price_type, price = None, None, None, None
+    tokens = event.message.text.split(" ")
+    if len(tokens) >= 4:
+        forex_type = ForexType.get_type(tokens[1])
+        currency_type = CurrencyType.get_type(tokens[2])
+        price_type = PriceType.get_type(tokens[3])
+
+    if forex_type is None or currency_type is None or price_type is None or price is None:
+        line_bot.replyMessage(event.source.user_id, "設定格式錯誤\n範例: '取消 買入 美元 低於'")
+    elif line_bot.removeNotifyCurrency(event.source.user_id, currency_type, forex_type, price_type):
+        line_bot.replyMessage(event.reply_token, "成功設定-不通知")
+    else:
+        line_bot.replyMessage(event.reply_token, "設定失敗")
 
 if __name__ == "__main__":
     #line_bot.addNotifyCurrency(CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)
