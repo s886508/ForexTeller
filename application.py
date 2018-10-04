@@ -1,21 +1,21 @@
 from flask import Flask, request, abort
+from LineBot.LineBot import ForexNotifierLineBot
+from ForexPriceNotifier.ForexPriceNotifier import ForexType, PriceType
 import Settings.config
 import os
 
-from linebot import (
-    LineBotApi, WebhookHandler
-)
+from linebot import WebhookHandler
 from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    MessageEvent, TextMessage, TextSendMessage, sources
 )
 
 app = Flask(__name__)
 
-line_bot_api = LineBotApi(Settings.config.line_access_token)
-handler = WebhookHandler(Settings.config.line_token_secret)
+webhook_handler = WebhookHandler(Settings.config.line_token_secret)
+line_bot = ForexNotifierLineBot()
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -28,20 +28,24 @@ def callback():
 
     # handle webhook body
     try:
-        handler.handle(body, signature)
+        webhook_handler.handle(body, signature)
     except InvalidSignatureError:
         abort(400)
 
     return 'OK'
 
-
-@handler.add(MessageEvent, message=TextMessage)
-def handle_message(event):
-    line_bot_api.reply_message(
-        event.reply_token,
-        TextSendMessage(text=event.message.text))
+@webhook_handler.add(MessageEvent, message=TextMessage)
+def handle_message(self, event):
+    #line_bot.line_bot_api.reply_message(event.reply_token, TextSendMessage(text=event.message.text))
+    if "Start" in event.message.text:
+        line_bot.addUserId(event.source.user_id)
+        line_bot.run()
+    elif "Stop" in event.message.text:
+        line_bot.stop()
 
 
 if __name__ == "__main__":
-    p = int(os.environ.get("PORT", 5000))
-    app.run(host="0.0.0.0", port=p)
+    line_bot.addNotifyCurrency("美元(USD)", 30.6, ForexType.Sell, PriceType.Exceed)
+    #line_bot.run()
+    app.run(host="0.0.0.0", port=os.environ.get("PORT", 5000))
+    line_bot.stop()
