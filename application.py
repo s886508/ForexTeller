@@ -1,6 +1,6 @@
 from flask import Flask, request, abort
 from LineBot.LineBot import ForexNotifierLineBot
-from ForexPriceNotifier.forexConfig import *
+from Settings.forexConfig import *
 import Settings.config
 import os
 
@@ -9,7 +9,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage, sources
+    MessageEvent, TextMessage
 )
 
 app = Flask(__name__)
