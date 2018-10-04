@@ -4,7 +4,6 @@ from Settings.forexConfig import CurrencyType, ForexType, PriceType
 class TestNotifier(object):
     def test_NotifySetting(self):
         notifier = ForexNotifier()
-        notifier.addWantedCurrency(CurrencyType.USD)
 
         # Case 1: Normal
         ret = notifier.addNotify(0, CurrencyType.USD, 30.0, ForexType.Buy, PriceType.Below)
@@ -27,7 +26,6 @@ class TestNotifier(object):
 
     def testMatchPrice(self):
         notifier = ForexNotifier()
-        notifier.addWantedCurrency(CurrencyType.USD)
 
         key = notifier.composeCurrencyKey(CurrencyType.USD, ForexType.Sell, PriceType.Exceed)
         d = {"美元(USD)-Sell-Exceed": 30.3}
@@ -56,7 +54,6 @@ class TestNotifier(object):
 
     def testRemoveNotify(self):
         notifier = ForexNotifier()
-        notifier.addWantedCurrency(CurrencyType.USD)
 
         # Case 1: Normal
         notifier.addNotify(0, CurrencyType.USD, 30.0, ForexType.Buy, PriceType.Below)

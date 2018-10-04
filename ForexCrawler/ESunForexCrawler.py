@@ -1,13 +1,15 @@
 from bs4 import BeautifulSoup
 import requests
 
+ESUN_FOREX_URL = "http://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates"
+
 class ESunForexCrawler:
 
     def __init__(self):
-        self.url_ = "http://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates"
+        self.url_ = ESUN_FOREX_URL
         self.html_text_ = ""
 
-    def retrieveForexData(self, forex_url):
+    def retrieveForexData(self, forex_url = None):
         """Open ESun Bank forex site and get its html content.
         Args:
             forex_url (str): The website to get forex data.
@@ -15,8 +17,8 @@ class ESunForexCrawler:
         Returns:
              Return True if html content get successfully.
         """
-        if len(forex_url) == 0:
-            return False
+        if forex_url is None:
+            forex_url = self.url_
 
         respone = requests.get(forex_url)
         self.html_text_ = respone.text

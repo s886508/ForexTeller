@@ -1,6 +1,6 @@
-from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 from abc import ABCMeta, abstractmethod
 from Settings.forexConfig import CurrencyType, ForexType, PriceType
+from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 
 import time
 
@@ -12,12 +12,12 @@ class ForexSubscriber:
 class ForexNotifier:
 
     def __init__(self, refresh_interval = 10000):
-        self.crawler_ = ESunForexCrawler()
         self.currency_notify_dict = {}
         self.currency_wanted_list = []
         self.currency_refresh_interval = refresh_interval #ms
         self.stop_ = False
         self.subscribers_set_ = set()
+        self.currency_filter = set()
 
     def addSubscriber(self, subscriber):
         self.subscribers_set_.add(subscriber)
@@ -30,11 +30,6 @@ class ForexNotifier:
             print("%s type is wrong" % (str(object)))
             return False
         return True
-
-    def addWantedCurrency(self, currency_type):
-        """Add currency to parse from forex website."""
-        if self.is_type(currency_type, CurrencyType):
-            self.currency_wanted_list.append(currency_type.value)
 
     def addNotify(self, user_id, currency_type, currency_price, forex_type, price_type):
         """
@@ -60,6 +55,7 @@ class ForexNotifier:
         if not self.is_type(price_type, PriceType):
             return False
 
+        self.currency_filter.add(currency_type.value)
         key = self.composeCurrencyKey(currency_type, forex_type, price_type)
         if not self.currency_notify_dict.get(user_id):
             self.currency_notify_dict[user_id] = {}
@@ -72,7 +68,7 @@ class ForexNotifier:
         Remove set notify currency.
 
         Args:
-            currency_type (str): Currency type to remove target price. eg. 美元(USD)
+            currency_type (CurrencyType): Currency type to remove target price. eg. 美元(USD)
             forex_type (ForexType): The price for buying or selling.
             price_type (PriceType): The type indicates notify when exceed or below target price.
 
@@ -147,19 +143,20 @@ class ForexNotifier:
                 for subscriber in self.subscribers_set_:
                     subscriber.update(user_id, message)
 
-        print(message)
+        #print(message)
         return message
 
-    def start(self):
+    def start(self, crawler):
         """Loop for retrieving forex data from website and check if the set price is reached."""
         while len(self.currency_notify_dict) > 0:
             if self.stop_:
                 self.stop_ = False
                 break
 
-            if len(self.currency_wanted_list) > 0:
-                self.crawler_.retrieveForexData(self.crawler_.url_)
-                self.notifyIfRequired(self.__retrieveWantedCurrency(), self.crawler_.getEffectiveTime())
+            if crawler.retrieveForexData():
+                currency_now = crawler.getCurrency(self.currency_filter)
+                effective_time = crawler.getEffectiveTime()
+                self.notifyIfRequired(currency_now, effective_time)
 
             time.sleep(self.currency_refresh_interval / 1000)
 
@@ -175,21 +172,9 @@ class ForexNotifier:
         for currency, price in self.currency_notify_dict.items():
             print("\t%s : %s" % (currency, price))
 
-
-    def __retrieveWantedCurrency(self):
-        """Get forex data from website for wanted currency."""
-        cur_currency_price_dict = self.crawler_.getCurrency(self.currency_wanted_list)
-        if len(cur_currency_price_dict) == 0:
-            print("Cannot get currency data. The tool will be stopped.")
-            return {}
-
-        return cur_currency_price_dict
-
 if __name__ == "__main__":
     notifier = ForexNotifier(30 * 1000)
-    notifier.addWantedCurrency(CurrencyType.USD)
-    notifier.addWantedCurrency(CurrencyType.JPY)
     notifier.addNotify(0, CurrencyType.USD, 30.4, ForexType.Sell, PriceType.Exceed)
     notifier.addNotify(0, CurrencyType.JPY, 0.27, ForexType.Buy, PriceType.Below)
     notifier.showNotifyCurrency()
-    notifier.start()
+    notifier.start(ESunForexCrawler())

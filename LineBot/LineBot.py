@@ -1,4 +1,5 @@
 from ForexPriceNotifier.ForexPriceNotifier import *
+from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 import Settings.config
 import threading
 
@@ -20,9 +21,9 @@ class ForexNotifierLineBot(ForexSubscriber):
         self.__notifier.addSubscriber(self)
         self.__notify_user_ids = set()
         self.__worker_thread = None
+        self.__crawler = ESunForexCrawler()
 
     def addNotifyCurrency(self, user_id, currency_type, currency_price, forex_type, price_type):
-        self.__notifier.addWantedCurrency(currency_type)
         return self.__notifier.addNotify(user_id, currency_type, currency_price, forex_type, price_type)
 
     def update(self, user_id, msg):
@@ -33,7 +34,7 @@ class ForexNotifierLineBot(ForexSubscriber):
     def run(self):
         """Start a thread to get forex data and notify user when needed."""
         if self.__worker_thread is None:
-            self.__worker_thread = threading.Thread(target=self.__notifier.start)
+            self.__worker_thread = threading.Thread(target=self.__notifier.start, args=(self.__crawler,))
             self.__worker_thread.start()
 
     def stop(self):
@@ -59,3 +60,8 @@ class ForexNotifierLineBot(ForexSubscriber):
 
     def get_notify_user_count(self):
         return len(self.__notify_user_ids)
+
+if __name__ == "__main__":
+    bot = ForexNotifierLineBot()
+    bot.addNotifyCurrency(0, CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)
+    bot.run()
