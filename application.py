@@ -40,8 +40,10 @@ def handle_message(self, event):
     if "Start" in event.message.text:
         line_bot.addUserId(event.source.user_id)
         line_bot.run()
+        line_bot.replyMessage(event.reply_token, "Start: user_id = %s" % (event.source.user_id))
     elif "Stop" in event.message.text:
         line_bot.stop()
+        line_bot.replyMessage(event.reply_token, "Stop: user_id = %s" % (event.source.user_id))
 
 
 if __name__ == "__main__":
