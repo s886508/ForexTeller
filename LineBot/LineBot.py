@@ -44,3 +44,6 @@ class ForexNotifierLineBot(ForexSubscriber):
 
     def removeUserId(self, user_id):
         self.__line_user_ids.discard(user_id)
+
+    def replyMessage(self, reply_token, message):
+        self.__line_bot_api.reply_message(reply_token, TextSendMessage(text=message))
