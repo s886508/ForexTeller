@@ -30,14 +30,15 @@ class ForexNotifierLineBot(ForexSubscriber):
             self.__line_bot_api.push_message(user_id, TextSendMessage(msg))
 
     def run(self):
-        if self.__worker_thread == None:
+        if self.__worker_thread is None:
             self.__worker_thread = threading.Thread(target=self.__notifier.start())
             self.__worker_thread.start()
 
     def stop(self):
         self.__notifier.stop()
-        self.__worker_thread.join()
-        self.__worker_thread = None
+        if self.__worker_thread is not None:
+            self.__worker_thread.join()
+            self.__worker_thread = None
 
     def addUserId(self, user_id):
         self.__line_user_ids.add(user_id)
