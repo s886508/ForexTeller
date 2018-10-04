@@ -1,15 +1,8 @@
 from ForexCrawler.ESunForexCrawler import ESunForexCrawler
-from enum import Enum
 from abc import ABCMeta, abstractmethod
+from ForexPriceNotifier.forexConfig import CurrencyType, ForexType, PriceType
+
 import time
-
-class ForexType(Enum):
-    Buy = "Buy"
-    Sell = "Sell"
-
-class PriceType(Enum):
-    Below = "Below"
-    Exceed = "Exceed"
 
 class ForexSubscriber:
     @abstractmethod
@@ -32,15 +25,22 @@ class ForexNotifier:
     def removeSubscriber(self, subscriber):
         self.subscribers_set_.discard(subscriber)
 
+    def is_type(self, object, t):
+        if type(object) is not t:
+            print("%s type is wrong" % (str(object)))
+            return False
+        return True
+
     def addWantedCurrency(self, currency_type):
-        self.currency_wanted_list.append(currency_type)
+        if self.is_type(currency_type, CurrencyType):
+            self.currency_wanted_list.append(currency_type)
 
     def addNotify(self, currency_type, currency_price, forex_type, price_type):
         """
         Set notify condition when price reach the settings
 
         Args:
-            currency_type (str): Currency type to set target price. eg. 美元(USD)
+            currency_type (CurrencyType): Currency type to set target price.
             currency_price (float): Target currency price.
             forex_type (ForexType): Set the price for buying or selling.
             price_type (PriceType): The type indicates notify when exceed or below target price.
@@ -49,20 +49,13 @@ class ForexNotifier:
             Return True if adding currency successfully.
 
         """
-        if type(currency_price) is not float and type(currency_price) is not int:
-            print("Parameter type is wrong. Please check.")
+        if not self.is_type(currency_price, float) and not self.is_type(currency_price, int):
             return False
-
-        if not currency_type:
-            print("Currency string is empty.")
+        if not self.is_type(currency_type, CurrencyType):
             return False
-
-        if type(forex_type) is not ForexType:
-            print("Forex Type is wrong.")
+        if not self.is_type(forex_type, ForexType):
             return False
-
-        if type(price_type) is not PriceType:
-            print("Price Type is wrong.")
+        if not self.is_type(price_type, PriceType):
             return False
 
         key = self.composeCurrencyKey(currency_type, forex_type, price_type)
@@ -80,8 +73,11 @@ class ForexNotifier:
             price_type (PriceType): The type indicates notify when exceed or below target price.
 
         """
-        if not currency_type:
-            print("Currency string is empty.")
+        if not self.is_type(currency_type, CurrencyType):
+            return False
+        if not self.is_type(forex_type, ForexType):
+            return False
+        if not self.is_type(price_type, PriceType):
             return False
 
         key = self.composeCurrencyKey(currency_type, forex_type, price_type)
@@ -93,8 +89,8 @@ class ForexNotifier:
 
         return True
 
-    def composeCurrencyKey(self, currency, forex_type, price_type):
-        return currency + "-" + str(forex_type.value) + "-" + str(price_type.value)
+    def composeCurrencyKey(self, currency_type, forex_type, price_type):
+        return str(currency_type.value) + "-" + str(forex_type.value) + "-" + str(price_type.value)
 
     def matchCurrencyPrice(self, currency, price):
         """
@@ -183,8 +179,8 @@ class ForexNotifier:
         return cur_currency_price_dict
 
 if __name__ == "__main__":
-    notifier = ForexNotifier(["美元(USD)", "日圓(JPY)"], 30 * 1000)
-    notifier.addNotify("美元(USD)", 30.4, ForexType.Sell, PriceType.Exceed)
-    notifier.addNotify("日圓(JPY)", 0.27, ForexType.Buy, PriceType.Below)
+    notifier = ForexNotifier(30 * 1000)
+    notifier.addNotify(CurrencyType.USD, 30.4, ForexType.Sell, PriceType.Exceed)
+    notifier.addNotify(CurrencyType.JPY, 0.27, ForexType.Buy, PriceType.Below)
     notifier.showNotifyCurrency()
     notifier.start()

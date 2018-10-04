@@ -22,7 +22,7 @@ class ForexNotifierLineBot(ForexSubscriber):
 
     def addNotifyCurrency(self, currency_type, currency_price, forex_type, price_type):
         self.__notifier.addWantedCurrency(currency_type)
-        self.__notifier.addNotify(currency_type, currency_price, forex_type, price_type)
+        return self.__notifier.addNotify(currency_type, currency_price, forex_type, price_type)
 
     def update(self, msg):
         print(msg)

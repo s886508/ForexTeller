@@ -1,6 +1,6 @@
 from flask import Flask, request, abort
 from LineBot.LineBot import ForexNotifierLineBot
-from ForexPriceNotifier.ForexPriceNotifier import ForexType, PriceType
+from ForexPriceNotifier.forexConfig import *
 import Settings.config
 import os
 
@@ -46,7 +46,7 @@ def handle_message(event):
 
 
 if __name__ == "__main__":
-    line_bot.addNotifyCurrency("美元(USD)", 30.6, ForexType.Sell, PriceType.Exceed)
+    line_bot.addNotifyCurrency(CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)
     #line_bot.run()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     line_bot.stop()
