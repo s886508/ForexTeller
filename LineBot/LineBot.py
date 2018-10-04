@@ -53,3 +53,6 @@ class ForexNotifierLineBot(ForexSubscriber):
 
     def replyMessage(self, reply_token, msg):
         self.__line_bot_api.reply_message(reply_token, TextSendMessage(text=msg))
+
+    def get_notify_user_count(self):
+        return len(self.__notify_user_ids)

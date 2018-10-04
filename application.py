@@ -39,10 +39,12 @@ def handle_message(event):
     if "啟動" == event.message.text:
         line_bot.replyMessage(event.reply_token, "開始偵測價格與通知")
         line_bot.addUserId(event.source.user_id)
-        line_bot.run()
+        if line_bot.get_notify_user_count() > 0:
+            line_bot.run()
     elif "停止" == event.message.text:
         line_bot.replyMessage(event.reply_token, "停止偵測價格與通知。")
-        line_bot.stop()
+        if line_bot.get_notify_user_count() == 0:
+            line_bot.stop()
     elif event.message.text.startswith("設定"):
         handle_setting_message(event)
 
@@ -67,6 +69,6 @@ def handle_setting_message(event):
 
 if __name__ == "__main__":
     #line_bot.addNotifyCurrency(CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)
-    #line_bot.run()
+    line_bot.run()
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
     line_bot.stop()
