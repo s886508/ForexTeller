@@ -32,6 +32,7 @@ class ForexNotifier:
         return True
 
     def addWantedCurrency(self, currency_type):
+        """Add currency to parse from forex website."""
         if self.is_type(currency_type, CurrencyType):
             self.currency_wanted_list.append(currency_type)
 
