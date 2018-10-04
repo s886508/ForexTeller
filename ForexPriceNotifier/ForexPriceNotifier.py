@@ -34,7 +34,7 @@ class ForexNotifier:
     def addWantedCurrency(self, currency_type):
         """Add currency to parse from forex website."""
         if self.is_type(currency_type, CurrencyType):
-            self.currency_wanted_list.append(currency_type)
+            self.currency_wanted_list.append(currency_type.value)
 
     def addNotify(self, currency_type, currency_price, forex_type, price_type):
         """
@@ -181,6 +181,8 @@ class ForexNotifier:
 
 if __name__ == "__main__":
     notifier = ForexNotifier(30 * 1000)
+    notifier.addWantedCurrency(CurrencyType.USD)
+    notifier.addWantedCurrency(CurrencyType.JPY)
     notifier.addNotify(CurrencyType.USD, 30.4, ForexType.Sell, PriceType.Exceed)
     notifier.addNotify(CurrencyType.JPY, 0.27, ForexType.Buy, PriceType.Below)
     notifier.showNotifyCurrency()
