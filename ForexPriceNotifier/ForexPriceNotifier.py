@@ -1,6 +1,6 @@
 from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 from abc import ABCMeta, abstractmethod
-from ForexPriceNotifier.forexConfig import CurrencyType, ForexType, PriceType
+from Settings.forexConfig import CurrencyType, ForexType, PriceType
 
 import time
 

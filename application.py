@@ -1,6 +1,6 @@
 from flask import Flask, request, abort
 from LineBot.LineBot import ForexNotifierLineBot
-from ForexPriceNotifier.forexConfig import *
+from Settings.forexConfig import *
 import Settings.config
 import os
 
@@ -9,7 +9,7 @@ from linebot.exceptions import (
     InvalidSignatureError
 )
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage, sources
+    MessageEvent, TextMessage
 )
 
 app = Flask(__name__)
@@ -36,11 +36,11 @@ def callback():
 
 @webhook_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
-    if "啟動" is event.message.text:
+    if "啟動" == event.message.text:
         line_bot.replyMessage(event.reply_token, "開始偵測資料與推送")
         line_bot.addUserId(event.source.user_id)
         line_bot.run()
-    elif "停止" is event.message.text:
+    elif "停止" == event.message.text:
         line_bot.replyMessage(event.reply_token, "停止偵測資料與推送")
         line_bot.stop()
 

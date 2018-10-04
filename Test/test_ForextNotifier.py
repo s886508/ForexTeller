@@ -1,6 +1,5 @@
-import pytest
 from ForexPriceNotifier.ForexPriceNotifier import ForexNotifier
-from ForexPriceNotifier.forexConfig import CurrencyType, ForexType, PriceType
+from Settings.forexConfig import CurrencyType, ForexType, PriceType
 
 class TestNotifier(object):
     def test_NotifySetting(self):
