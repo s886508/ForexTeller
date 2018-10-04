@@ -132,7 +132,7 @@ class ForexNotifier:
                 if tmp not in currency_dict.keys():
                     print("幣別無法由資料中取得: %s" % (currency))
                     continue
-                elif self.matchCurrencyPrice(notify_dict, currency, price):
+                elif self.matchCurrencyPrice(currency_dict, currency, price):
                     currency_msg += "\t%d.  %s : %s\n" % (num, currency, str(price))
                     num += 1
 
@@ -174,7 +174,7 @@ class ForexNotifier:
 
 if __name__ == "__main__":
     notifier = ForexNotifier(30 * 1000)
-    notifier.addNotify(0, CurrencyType.USD, 30.4, ForexType.Sell, PriceType.Exceed)
-    notifier.addNotify(0, CurrencyType.JPY, 0.27, ForexType.Buy, PriceType.Below)
+    notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Sell, PriceType.Exceed)
+    #notifier.addNotify(0, CurrencyType.JPY, 0.27, ForexType.Buy, PriceType.Below)
     notifier.showNotifyCurrency()
     notifier.start(ESunForexCrawler())
