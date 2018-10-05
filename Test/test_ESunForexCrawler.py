@@ -1,5 +1,6 @@
 import pytest
 from ForexCrawler.ESunForexCrawler import ESunForexCrawler
+from Settings.forexConfig import *
 
 class TestCrawler(object):
     def test_retrieveForexData(self):
@@ -33,21 +34,32 @@ class TestCrawler(object):
 
         crawler = ESunForexCrawler()
 
+        currency_buy = "%s-%s" % (CurrencyType.USD.value, ForexType.Buy.value)
+        currency_sell = "%s-%s" % (CurrencyType.USD.value, ForexType.Sell.value)
+
         # Case 1
         ret = crawler.getCurrency(["美元(USD)"], html_text)
         assert len(ret) == 2
+        assert currency_buy in ret
+        assert currency_sell in ret
 
         # Case 2
         ret = crawler.getCurrency(["美元(USD)", "人民幣(CNY)"], html_text)
         assert len(ret) == 2
+        assert currency_buy in ret
+        assert currency_sell in ret
 
         # Case 3
         ret = crawler.getCurrency(["美元"], html_text)
         assert len(ret) == 0
+        assert currency_buy not in ret
+        assert currency_sell not in ret
 
         # Case 4
         ret = crawler.getCurrency([""], html_text)
         assert len(ret) == 0
+        assert currency_buy not in ret
+        assert currency_sell not in ret
 
     def test_getTime(self):
         # Case 1: Normal

@@ -1,8 +1,8 @@
 from enum import Enum
 
 class ForexType(Enum,):
-    Buy = "Buy"
-    Sell = "Sell"
+    Buy = "買入"
+    Sell = "賣出"
 
     @staticmethod
     def get_type(token):
@@ -13,8 +13,8 @@ class ForexType(Enum,):
         return None
 
 class PriceType(Enum):
-    Below = "Below"
-    Exceed = "Exceed"
+    Below = "低於"
+    Exceed = "高於"
 
     @staticmethod
     def get_type(token):
@@ -30,8 +30,8 @@ class CurrencyType(Enum):
 
     @staticmethod
     def get_type(token):
-        if token == "美元":
+        if "美元" in token:
             return CurrencyType.USD
-        elif token == "日圓":
+        elif "日圓" in token:
             return CurrencyType.JPY
         return None

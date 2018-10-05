@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+from Settings.forexConfig import *
 import requests
 
 ESUN_FOREX_URL = "http://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates"
@@ -65,8 +66,8 @@ class ESunForexCrawler:
                 print("The html content may be changed. Please modify the parsing rules")
                 break
             if list_currency[0] in currency_to_get:
-                currency_dict[list_currency[0] + "-Buy"] = float(list_currency[3])
-                currency_dict[list_currency[0] + "-Sell"] = float(list_currency[4])
+                currency_dict["%s-%s" % (list_currency[0], ForexType.Buy.value)] = float(list_currency[3])
+                currency_dict["%s-%s" % (list_currency[0], ForexType.Sell.value)] = float(list_currency[4])
 
         if len(currency_dict) == 0:
             print("Cannot match given currency.")

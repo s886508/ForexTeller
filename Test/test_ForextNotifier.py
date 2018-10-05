@@ -28,7 +28,7 @@ class TestNotifier(object):
         notifier = ForexNotifier()
 
         key = notifier.composeCurrencyKey(CurrencyType.USD, ForexType.Sell, PriceType.Exceed)
-        d = {"美元(USD)-Sell-Exceed": 30.3}
+        d = {"美元(USD)-%s-%s" % (ForexType.Sell.value, PriceType.Exceed.value): 30.3}
 
         # Case 1: Not call setNotify
         ret = notifier.matchCurrencyPrice(d, key, 30)
@@ -50,6 +50,11 @@ class TestNotifier(object):
 
         # Case 4: Incorrect price type
         ret = notifier.matchCurrencyPrice(d, key, "30.4")
+        assert ret == False
+
+        # Case 5: Incorrect key string
+        key = "美元(USD)"
+        ret = notifier.matchCurrencyPrice(d, key, 30.4)
         assert ret == False
 
     def testRemoveNotify(self):

@@ -94,31 +94,28 @@ class ForexNotifier:
     def composeCurrencyKey(self, currency_type, forex_type, price_type):
         return str(currency_type.value) + "-" + str(forex_type.value) + "-" + str(price_type.value)
 
-    def matchCurrencyPrice(self, notify_dict, currency, price):
+    def matchCurrencyPrice(self, currency_now, currency, price):
         """
         Check if given currency matches the set price.
 
-        Args:
+        :param
+            currency_now (dict): Current currency data from web.
             currency (str): Currency to check if reach the set price.
             price (float): Price to check the set value.
         Returns:
             Return True if matched the set price for given currency.
         """
-        if notify_dict.get(currency) == None:
-            print("The currency: %s does not call setNotify." % (currency))
+        key = currency[:currency.rfind("-")]
+        if key not in currency_now.keys():
+            print("幣別無法由資料中取得: %s" % (key))
             return False
         if type(price) is not float and type(price) is not int:
             print("Parameter type is wrong. Please check.")
             return False
-        if "Buy" in currency:
-            if "Below" in currency and price <= notify_dict[currency]:
+        if ForexType.Buy.value in currency or ForexType.Sell.value in currency:
+            if PriceType.Below.value in currency and price <= currency_now[key]:
                 return True
-            elif "Exceed" in currency and price >= notify_dict[currency]:
-                return True
-        if "Sell" in currency:
-            if "Below" in currency and price <= notify_dict[currency]:
-                return True
-            elif "Exceed" in currency and price >= notify_dict[currency]:
+            elif PriceType.Exceed.value in currency and price >= currency_now[key]:
                 return True
         return False
 
@@ -128,11 +125,7 @@ class ForexNotifier:
         num = 1
         for user_id, notify_dict in self.currency_notify_dict.items():
             for currency, price in notify_dict.items():
-                tmp = currency.replace("-Exceed", "").replace("-Below", "")
-                if tmp not in currency_dict.keys():
-                    print("幣別無法由資料中取得: %s" % (currency))
-                    continue
-                elif self.matchCurrencyPrice(currency_dict, currency, price):
+                if self.matchCurrencyPrice(currency_dict, currency, price):
                     currency_msg += "\t%d.  %s : %s\n" % (num, currency, str(price))
                     num += 1
 
@@ -174,9 +167,7 @@ class ForexNotifier:
             for currency, price in self.currency_notify_dict[user_id].items():
                 index = currency.find("-")
                 index2 = currency.find("-", index + 1)
-                info += "%d. %s %s %s %s\n" % (num, PriceType.get_type(currency[index + 1: index2]),
-                        CurrencyType.get_type(currency[:index]),
-                        ForexType.get_type(currency[index2 + 1:]), str(price))
+                info += "%d. %s %s %s %s\n" % (num, currency[index + 1: index2], currency[:index], currency[index2 + 1:], str(price))
                 num += 1
 
         return info
