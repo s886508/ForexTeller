@@ -137,7 +137,9 @@ class ForexNotifier:
         self.currency_filter.add(currency_type.value)
         key = self.compose_currency_key(currency_type, forex_type, price_type)
 
-        forex_notify_info = ForexNotifyInfo()
+        forex_notify_info = self.currency_notify_dict.get(user_id)
+        if forex_notify_info is None:
+            forex_notify_info = ForexNotifyInfo()
         forex_notify_info.add_notify(key, currency_price)
 
         self.currency_notify_dict[user_id] = forex_notify_info
@@ -222,7 +224,7 @@ class ForexNotifier:
 
 if __name__ == "__main__":
     notifier = ForexNotifier(10 * 1000)
-    #notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Sell, PriceType.Exceed)
+    notifier.addNotify(0, CurrencyType.USD, 30.8, ForexType.Buy, PriceType.Exceed)
     notifier.addNotify(0, CurrencyType.JPY, 0.269, ForexType.Buy, PriceType.Exceed)
     print(notifier.get_notify_currency_info(0))
     #print(notifier.get_notify_currency_info(1))
