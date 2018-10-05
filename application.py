@@ -51,7 +51,7 @@ def handle_message(event):
     elif event.message.text.startswith("取消"):
         handle_remove_setting(event)
     elif "目前設定" in event.message.text:
-        handle_current_setting(event);
+        handle_current_setting(event)
 
 
 def handle_add_setting(event):
