@@ -25,8 +25,6 @@ class TestNotifier(object):
         assert ret == False
 
     def testMatchPrice(self):
-
-
         currency_now = {"美元(USD)-%s" % (ForexType.Sell.value): 30.3}
         currency_now2 = {"美元(USD)-%s" % (ForexType.Sell.value): 30.4}
 
@@ -54,6 +52,14 @@ class TestNotifier(object):
         # Case 3: Incorrect currency
         notify_info = ForexNotifyInfo()
         notify_info.add_notify(key2, "30.3")
+        ret = notify_info.get_matched_notify(currency_now)
+        assert len(ret) == 0
+        notify_info = None
+
+        # Case 4: Continuous check matched
+        notify_info = ForexNotifyInfo()
+        notify_info.add_notify(key, 30.3)
+        ret = notify_info.get_matched_notify(currency_now)
         ret = notify_info.get_matched_notify(currency_now)
         assert len(ret) == 0
 

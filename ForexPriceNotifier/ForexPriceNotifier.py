@@ -8,24 +8,23 @@ import time
 class ForexNotifyInfo:
 
     def __init__(self):
+        self.__notified_interval = 10 # minutes
         self.__currency_dict = {}
-        self.__last_notify_time = None
+        self.__last_notify_time = {}
 
-    def is_notify_valid(self, cur_time = None):
+    def __is_notify_valid(self, last_notify_time, cur_time = None):
         """Check if the notifies interval is over 10 minutes.
         :return
             Return True if the interval > 10 minutes
         """
-        time_format = "%Y-%m-%d %H:%M:%S.f"
-        if self.last_notify_time is None:
-            self.last_notify_time = datetime.strptime(datetime.now(), time_format)
+        if last_notify_time is None:
             return True
-        if cur_time is None:
-            cur_time = datetime.strptime(datetime.now(), time_format)
 
-        diff = cur_time - self.last_notify_time
-        if diff.min >= 10:
-            self.last_notify_time = cur_time
+        if cur_time is None:
+            cur_time = datetime.now()
+
+        diff = cur_time - last_notify_time
+        if diff.seconds / 60 >= self.__notified_interval:
             return True
 
         return False
@@ -60,6 +59,10 @@ class ForexNotifyInfo:
                 print("幣別無法由資料中取得: %s" % (key))
                 continue
 
+            if not self.__is_notify_valid(self.__last_notify_time.get(currency)):
+                continue
+
+            self.__last_notify_time[currency] = datetime.now()
             if ForexType.Buy.value in currency or ForexType.Sell.value in currency:
                 if PriceType.Below.value in currency and price >= currency_now[key]:
                     msg += "\t%d.  %s : %s\n" % (num, currency, str(price))
@@ -218,7 +221,7 @@ class ForexNotifier:
         return info
 
 if __name__ == "__main__":
-    notifier = ForexNotifier(30 * 1000)
+    notifier = ForexNotifier(10 * 1000)
     #notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Sell, PriceType.Exceed)
     notifier.addNotify(0, CurrencyType.JPY, 0.269, ForexType.Buy, PriceType.Exceed)
     print(notifier.get_notify_currency_info(0))
