@@ -113,9 +113,9 @@ class ForexNotifier:
             print("Parameter type is wrong. Please check.")
             return False
         if ForexType.Buy.value in currency or ForexType.Sell.value in currency:
-            if PriceType.Below.value in currency and price <= currency_now[key]:
+            if PriceType.Below.value in currency and price >= currency_now[key]:
                 return True
-            elif PriceType.Exceed.value in currency and price >= currency_now[key]:
+            elif PriceType.Exceed.value in currency and price <= currency_now[key]:
                 return True
         return False
 
@@ -174,8 +174,8 @@ class ForexNotifier:
 
 if __name__ == "__main__":
     notifier = ForexNotifier(30 * 1000)
-    notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Sell, PriceType.Exceed)
-    notifier.addNotify(0, CurrencyType.JPY, 0.27, ForexType.Buy, PriceType.Below)
+    #notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Sell, PriceType.Exceed)
+    notifier.addNotify(0, CurrencyType.JPY, 0.271, ForexType.Buy, PriceType.Exceed)
     print(notifier.get_notify_currency_info(0))
-    print(notifier.get_notify_currency_info(1))
+    #print(notifier.get_notify_currency_info(1))
     notifier.start(ESunForexCrawler())
