@@ -144,8 +144,9 @@ class ForexNotifier:
         while len(self.currency_notify_dict) > 0:
             if self.stop_:
                 self.stop_ = False
+                print("中斷運作")
                 break
-
+            print("持續運作")
             if crawler.retrieveForexData():
                 currency_now = crawler.getCurrency(self.currency_filter)
                 effective_time = crawler.getEffectiveTime()
