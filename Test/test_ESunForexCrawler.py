@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import pytest
 from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 from Settings.forexConfig import *

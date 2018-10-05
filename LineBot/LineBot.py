@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from ForexPriceNotifier.ForexPriceNotifier import *
 from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 import Settings.config

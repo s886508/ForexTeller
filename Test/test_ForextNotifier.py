@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from ForexPriceNotifier.ForexPriceNotifier import *
 from Settings.forexConfig import CurrencyType, ForexType, PriceType
 

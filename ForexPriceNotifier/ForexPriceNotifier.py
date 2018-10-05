@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
 from Settings.forexConfig import CurrencyType, ForexType, PriceType
 from ForexCrawler.ESunForexCrawler import ESunForexCrawler
