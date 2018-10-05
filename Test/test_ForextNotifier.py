@@ -1,4 +1,4 @@
-from ForexPriceNotifier.ForexPriceNotifier import ForexNotifier
+from ForexPriceNotifier.ForexPriceNotifier import *
 from Settings.forexConfig import CurrencyType, ForexType, PriceType
 
 class TestNotifier(object):
@@ -25,37 +25,37 @@ class TestNotifier(object):
         assert ret == False
 
     def testMatchPrice(self):
-        notifier = ForexNotifier()
 
-        key = notifier.composeCurrencyKey(CurrencyType.USD, ForexType.Sell, PriceType.Exceed)
-        d = {"美元(USD)-%s-%s" % (ForexType.Sell.value, PriceType.Exceed.value): 30.3}
+
+        currency_now = {"美元(USD)-%s" % (ForexType.Sell.value): 30.3}
+        currency_now2 = {"美元(USD)-%s" % (ForexType.Sell.value): 30.4}
 
         # Case 1: Not call setNotify
-        ret = notifier.matchCurrencyPrice(d, key, 30)
-        assert ret == False
+        notify_info = ForexNotifyInfo()
+        ret = notify_info.get_matched_notify(currency_now)
+        assert len(ret) == 0
+        notify_info = None
 
         # Case 2: Call SetNotify
-        notifier.addNotify(0, CurrencyType.USD, 30.3, ForexType.Sell, PriceType.Exceed)
-        ret = notifier.matchCurrencyPrice(d, key, 30.4)
-        assert ret == True
+        notify_info = ForexNotifyInfo()
+        key = ForexNotifier.compose_currency_key(CurrencyType.USD, ForexType.Sell, PriceType.Exceed)
+        notify_info.add_notify(key, 30.3)
+        ret = notify_info.get_matched_notify(currency_now)
+        assert len(ret) > 0
+        notify_info = None
 
-        key2 = notifier.composeCurrencyKey(CurrencyType.USD, ForexType.Sell, PriceType.Below)
-        notifier.addNotify(0, CurrencyType.USD, 30.3, ForexType.Sell, PriceType.Below)
-        ret = notifier.matchCurrencyPrice(d, key2, 30.4)
-        assert ret == False
+        notify_info = ForexNotifyInfo()
+        key2 = ForexNotifier.compose_currency_key(CurrencyType.USD, ForexType.Sell, PriceType.Below)
+        notify_info.add_notify(key2, 30.3)
+        ret = notify_info.get_matched_notify(currency_now2)
+        assert len(ret) == 0
+        notify_info = None
 
         # Case 3: Incorrect currency
-        ret = notifier.matchCurrencyPrice(d, "(USD)", 30.4)
-        assert ret == False
-
-        # Case 4: Incorrect price type
-        ret = notifier.matchCurrencyPrice(d, key, "30.4")
-        assert ret == False
-
-        # Case 5: Incorrect key string
-        key = "美元(USD)"
-        ret = notifier.matchCurrencyPrice(d, key, 30.4)
-        assert ret == False
+        notify_info = ForexNotifyInfo()
+        notify_info.add_notify(key2, "30.3")
+        ret = notify_info.get_matched_notify(currency_now)
+        assert len(ret) == 0
 
     def testRemoveNotify(self):
         notifier = ForexNotifier()
