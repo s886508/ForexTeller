@@ -35,6 +35,7 @@ class ForexNotifyInfo:
     def add_notify(self, currency, price):
         if type(price) is float or type(price) is int:
             self.__currency_dict[currency] = price
+            self.__last_notify_time[currency] = None
 
     def has_notify(self, currency):
         return self.__currency_dict.get(currency)
