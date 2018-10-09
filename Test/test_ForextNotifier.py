@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 from ForexPriceNotifier.ForexPriceNotifier import *
 from Settings.forexConfig import CurrencyType, ForexType, PriceType
+from Test.Mock.ForexCrawlerMock import ForexCrawlerMock
+from Test.Mock.ForexSubscriberMock import ForexSubscriberMock
 
 class TestNotifier(object):
     def test_NotifySetting(self):
@@ -83,3 +85,18 @@ class TestNotifier(object):
         # Case 3: None Object
         ret = notifier.removeNotify(0, None, ForexType.Buy, PriceType.Below)
         assert ret == False
+
+    def testSynchronous(self):
+        sub = ForexSubscriberMock()
+
+        # Case 1: Normal
+        notifier = ForexNotifier(1)
+        notifier.addSubscriber(sub)
+
+        notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Buy, PriceType.Below)
+        assert notifier.start(ForexCrawlerMock()) == True
+        time.sleep(1)
+        assert len(sub.update_msg) > 0
+
+        notifier.stop()
+

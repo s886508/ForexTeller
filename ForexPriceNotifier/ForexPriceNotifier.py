@@ -5,6 +5,7 @@ from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 from datetime import timedelta, datetime
 
 import time
+import threading
 
 class ForexNotifyInfo:
 
@@ -12,6 +13,7 @@ class ForexNotifyInfo:
         self.__notified_interval = 10 # minutes
         self.__currency_dict = {}
         self.__last_notify_time = {}
+        self.__worker_thread = None
 
     def __is_notify_valid(self, last_notify_time, cur_time = None):
         """Check if the notifies interval is over 10 minutes.
@@ -98,6 +100,7 @@ class ForexNotifier:
         self.stop_ = False
         self.subscribers_set_ = set()
         self.currency_filter = set()
+        self.__worker_thread = None
 
     def addSubscriber(self, subscriber):
         self.subscribers_set_.add(subscriber)
@@ -194,7 +197,7 @@ class ForexNotifier:
         print(message)
         return message
 
-    def start(self, crawler):
+    def __start(self, crawler):
         """Loop for retrieving forex data from website and check if the set price is reached."""
         while len(self.currency_notify_dict) > 0:
             if self.stop_:
@@ -209,8 +212,21 @@ class ForexNotifier:
 
             time.sleep(self.currency_refresh_interval / 1000)
 
+    def start(self, crawler):
+        """Start a thread to get forex data and notify user when needed."""
+        if self.__worker_thread is None:
+            self.__worker_thread = threading.Thread(target=self.__start, args=(crawler,))
+            self.__worker_thread.start()
+            return True
+        return False
+
     def stop(self):
+        """Stop the worker thread and wait until it finished."""
         self.stop_ = True
+        if self.__worker_thread is not None:
+            self.__worker_thread.join()
+            self.__worker_thread = None
+
 
     def get_notify_currency_info(self, user_id):
         """Display set notify currency"""

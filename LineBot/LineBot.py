@@ -2,7 +2,6 @@
 from ForexPriceNotifier.ForexPriceNotifier import *
 from ForexCrawler.ESunForexCrawler import ESunForexCrawler
 import Settings.config
-import threading
 
 from linebot import LineBotApi
 
@@ -21,7 +20,6 @@ class ForexNotifierLineBot(ForexSubscriber):
         self.__notifier = ForexNotifier()
         self.__notifier.addSubscriber(self)
         self.__notify_user_ids = set()
-        self.__worker_thread = None
         self.__crawler = ESunForexCrawler()
 
     def addNotifyCurrency(self, user_id, currency_type, currency_price, forex_type, price_type):
@@ -36,17 +34,10 @@ class ForexNotifierLineBot(ForexSubscriber):
             self.pushMessage(user_id, msg)
 
     def run(self):
-        """Start a thread to get forex data and notify user when needed."""
-        if self.__worker_thread is None:
-            self.__worker_thread = threading.Thread(target=self.__notifier.start, args=(self.__crawler,))
-            self.__worker_thread.start()
+        return self.__notifier.start(self.__crawler)
 
     def stop(self):
-        """Stop the worker thread and wait until it finished."""
         self.__notifier.stop()
-        if self.__worker_thread is not None:
-            self.__worker_thread.join()
-            self.__worker_thread = None
 
     def addUserId(self, user_id):
         """Add line user id to push messages."""
