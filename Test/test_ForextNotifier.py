@@ -90,13 +90,36 @@ class TestNotifier(object):
         sub = ForexSubscriberMock()
 
         # Case 1: Normal
-        notifier = ForexNotifier(1)
+        notifier = ForexNotifier(50)
         notifier.addSubscriber(sub)
 
         notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Buy, PriceType.Below)
         assert notifier.start(ForexCrawlerMock()) == True
+        assert len(sub.update_msg) == 0
         time.sleep(1)
         assert len(sub.update_msg) > 0
+
+        notifier.stop()
+
+        # Case 2
+        notifier = ForexNotifier(1)
+        notifier.addSubscriber(sub)
+
+        sub.update_msg = ""
+        notifier.start(ForexCrawlerMock())
+        notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Buy, PriceType.Below)
+
+        sub.update_msg = ""
+        notifier.removeNotify(0, CurrencyType.USD, ForexType.Buy, PriceType.Below)
+        assert len(sub.update_msg) == 0
+        notifier.removeSubscriber(sub)
+
+        # Case 3
+        notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Buy, PriceType.Below)
+        sub2 = ForexSubscriberMock()
+        notifier.addSubscriber(sub2)
+        time.sleep(1)
+        assert len(sub2.update_msg) > 0
 
         notifier.stop()
 

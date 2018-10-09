@@ -38,15 +38,19 @@ def callback():
 @webhook_handler.add(MessageEvent, message=TextMessage)
 def handle_message(event):
     if "啟動" == event.message.text:
-        line_bot.replyMessage(event.reply_token, "開始偵測價格與通知")
         line_bot.addUserId(event.source.user_id)
         if line_bot.get_notify_user_count() > 0:
-            line_bot.run()
+            if line_bot.run():
+                line_bot.replyMessage(event.reply_token, "開始偵測價格與通知")
+            else:
+                line_bot.replyMessage(event.reply_token, "正在偵測價格與通知")
     elif "停止" == event.message.text:
-        line_bot.replyMessage(event.reply_token, "停止偵測價格與通知")
         line_bot.removeUserId(event.source.user_id)
         if line_bot.get_notify_user_count() == 0:
-            line_bot.stop()
+            if line_bot.stop():
+                line_bot.replyMessage(event.reply_token, "停止偵測價格與通知")
+            else:
+                line_bot.replyMessage(event.reply_token, "偵測與通知尚未啟動")
     elif event.message.text.startswith("設定"):
         handle_add_setting(event)
     elif event.message.text.startswith("取消"):

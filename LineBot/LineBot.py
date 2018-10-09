@@ -37,7 +37,7 @@ class ForexNotifierLineBot(ForexSubscriber):
         return self.__notifier.start(self.__crawler)
 
     def stop(self):
-        self.__notifier.stop()
+        return self.__notifier.stop()
 
     def addUserId(self, user_id):
         """Add line user id to push messages."""

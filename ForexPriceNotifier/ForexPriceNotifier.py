@@ -101,12 +101,17 @@ class ForexNotifier:
         self.subscribers_set_ = set()
         self.currency_filter = set()
         self.__worker_thread = None
+        self.__lock = threading.Lock()
 
     def addSubscriber(self, subscriber):
+        self.__lock.acquire()
         self.subscribers_set_.add(subscriber)
+        self.__lock.release()
 
     def removeSubscriber(self, subscriber):
+        self.__lock.acquire()
         self.subscribers_set_.discard(subscriber)
+        self.__lock.release()
 
     def is_type(self, object, t):
         if type(object) is not t:
@@ -138,6 +143,7 @@ class ForexNotifier:
         if not self.is_type(price_type, PriceType):
             return False
 
+        self.__lock.acquire()
         self.currency_filter.add(currency_type.value)
         key = self.compose_currency_key(currency_type, forex_type, price_type)
 
@@ -147,6 +153,7 @@ class ForexNotifier:
         forex_notify_info.add_notify(key, currency_price)
 
         self.currency_notify_dict[user_id] = forex_notify_info
+        self.__lock.release()
 
         return True
 
@@ -173,7 +180,9 @@ class ForexNotifier:
         if not self.currency_notify_dict[user_id].has_notify(key):
             print("尚未設定任何通知。")
             return False
+        self.__lock.acquire()
         self.currency_notify_dict[user_id].remove_notify(key)
+        self.__lock.release()
         print("通知已移除: %s" % (key))
 
         return True
@@ -199,16 +208,18 @@ class ForexNotifier:
 
     def __start(self, crawler):
         """Loop for retrieving forex data from website and check if the set price is reached."""
-        while len(self.currency_notify_dict) > 0:
+        while True:
             if self.stop_:
                 self.stop_ = False
                 print("中斷運作")
                 break
             print("持續運作")
-            if crawler.retrieveForexData():
+            if len(self.currency_notify_dict) > 0 and crawler.retrieveForexData():
+                self.__lock.acquire()
                 currency_now = crawler.getCurrency(self.currency_filter)
                 effective_time = crawler.getEffectiveTime()
                 self.notify_if_required(currency_now, effective_time)
+                self.__lock.release()
 
             time.sleep(self.currency_refresh_interval / 1000)
 
@@ -222,10 +233,12 @@ class ForexNotifier:
 
     def stop(self):
         """Stop the worker thread and wait until it finished."""
-        self.stop_ = True
         if self.__worker_thread is not None:
+            self.stop_ = True
             self.__worker_thread.join()
             self.__worker_thread = None
+            return True
+        return False
 
 
     def get_notify_currency_info(self, user_id):
