@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, abort
-from linebot.line_bot import ForexNotifierLineBot
+from forexbot.line_bot import ForexNotifierLineBot
 from settings.forex_config import *
 import settings.config
 import os

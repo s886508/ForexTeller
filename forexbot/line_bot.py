@@ -4,10 +4,6 @@ from forexcrawler.esun_forex_crawler import ESunForexCrawler
 import settings.config
 
 from linebot import LineBotApi
-
-from linebot.exceptions import (
-    InvalidSignatureError
-)
 from linebot.models import (
     MessageEvent, TextMessage, TextSendMessage,
 )
