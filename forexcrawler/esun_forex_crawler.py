@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from bs4 import BeautifulSoup
-from Settings.forexConfig import *
-from ForexCrawler.ForexCrawlerBase import ForexCrawlerBase
+from settings.forex_config import *
+from forexcrawler.forex_crawler_base import ForexCrawlerBase
 import requests
 
 ESUN_FOREX_URL = "http://www.esunbank.com.tw/bank/personal/deposit/rate/forex/foreign-exchange-rates"

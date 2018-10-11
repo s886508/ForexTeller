@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from abc import ABCMeta, abstractmethod
-from Settings.forexConfig import CurrencyType, ForexType, PriceType
-from ForexCrawler.ESunForexCrawler import ESunForexCrawler
+from settings.forex_config import CurrencyType, ForexType, PriceType
+from forexcrawler.esun_forex_crawler import ESunForexCrawler
 from datetime import timedelta, datetime
 
 import time

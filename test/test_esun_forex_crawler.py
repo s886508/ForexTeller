@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import pytest
-from ForexCrawler.ESunForexCrawler import ESunForexCrawler
-from Settings.forexConfig import *
+from forexcrawler.esun_forex_crawler import ESunForexCrawler
+from settings.forex_config import *
 
 class TestCrawler(object):
     def test_retrieveForexData(self):

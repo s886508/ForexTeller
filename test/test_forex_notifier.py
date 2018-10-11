@@ -1,8 +1,8 @@
 # -*- coding: utf-8 -*-
-from ForexPriceNotifier.ForexPriceNotifier import *
-from Settings.forexConfig import CurrencyType, ForexType, PriceType
-from Test.Mock.ForexCrawlerMock import ForexCrawlerMock
-from Test.Mock.ForexSubscriberMock import ForexSubscriberMock
+from forexnotifier.forex_notifier import *
+from settings.forex_config import CurrencyType, ForexType, PriceType
+from test.mock.mock_forex_crawler import ForexCrawlerMock
+from test.mock.mock_forex_subscriber import ForexSubscriberMock
 
 class TestNotifier(object):
     def test_NotifySetting(self):
