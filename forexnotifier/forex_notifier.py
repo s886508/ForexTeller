@@ -3,6 +3,7 @@ from abc import ABCMeta, abstractmethod
 from settings.forex_config import CurrencyType, ForexType, PriceType
 from forexcrawler.esun_forex_crawler import ESunForexCrawler
 from datetime import timedelta, datetime
+from forexnotifier.database.forex_notify_db import ForexNotifyDB
 
 import time
 import threading
@@ -60,7 +61,6 @@ class ForexNotifyInfo:
         for currency, price in self.__currency_dict.items():
             key = currency[:currency.rfind("-")]
             if key not in currency_now.keys():
-                print("幣別無法由資料中取得: %s" % (key))
                 continue
 
             if not self.__is_notify_valid(self.__last_notify_time.get(currency)):
@@ -96,13 +96,32 @@ class ForexNotifier:
 
     def __init__(self, refresh_interval = 10000):
         self.currency_notify_dict = {}
-        self.currency_wanted_list = []
         self.currency_refresh_interval = refresh_interval #ms
         self.stop_ = False
         self.subscribers_set_ = set()
-        self.currency_filter = set()
         self.__worker_thread = None
         self.__lock = threading.Lock()
+        self.__db = None
+
+    def __get_db(self):
+        if self.__db is None:
+            self.__db = ForexNotifyDB()
+        return self.__db
+
+    def load_setting(self):
+        """ Load previous saved settings from database. """
+        if len(self.currency_notify_dict) > 0:
+            print("The notify setting has already existed.")
+            return False
+
+        records = self.__get_db().get_all_data()
+        for r in records:
+            forex_notify_info = ForexNotifyInfo()
+            forex_notify_info.add_notify(r["cond"], float(r["price"]))
+            self.currency_notify_dict[r["user_id"]] = forex_notify_info
+
+        return True
+
 
     def addSubscriber(self, subscriber):
         self.__lock.acquire()
@@ -145,7 +164,6 @@ class ForexNotifier:
             return False
 
         self.__lock.acquire()
-        self.currency_filter.add(currency_type.value)
         key = self.compose_currency_key(currency_type, forex_type, price_type)
 
         forex_notify_info = self.currency_notify_dict.get(user_id)
@@ -154,6 +172,8 @@ class ForexNotifier:
         forex_notify_info.add_notify(key, currency_price)
 
         self.currency_notify_dict[user_id] = forex_notify_info
+        self.__get_db().add(user_id, key, currency_price)
+
         self.__lock.release()
 
         return True
@@ -182,7 +202,10 @@ class ForexNotifier:
             print("尚未設定任何通知。")
             return False
         self.__lock.acquire()
+
         self.currency_notify_dict[user_id].remove_notify(key)
+        self.__get_db().remove(user_id, key)
+
         self.__lock.release()
         print("通知已移除: %s" % (key))
 
@@ -217,9 +240,11 @@ class ForexNotifier:
             print("持續運作")
             if len(self.currency_notify_dict) > 0 and crawler.retrieveForexData():
                 self.__lock.acquire()
-                currency_now = crawler.getCurrency(self.currency_filter)
-                effective_time = crawler.getEffectiveTime()
-                self.notify_if_required(currency_now, effective_time)
+                filters = [CurrencyType.USD.value, CurrencyType.JPY.value]
+                for f in filters:
+                    currency_now = crawler.getCurrency(f)
+                    effective_time = crawler.getEffectiveTime()
+                    self.notify_if_required(currency_now, effective_time)
                 self.__lock.release()
 
             time.sleep(self.currency_refresh_interval / 1000)
@@ -255,7 +280,8 @@ class ForexNotifier:
 
 if __name__ == "__main__":
     notifier = ForexNotifier(10 * 1000)
-    notifier.addNotify(0, CurrencyType.USD, 30.8, ForexType.Buy, PriceType.Exceed)
+    notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Buy, PriceType.Exceed)
+    #notifier.removeNotify(0, CurrencyType.USD, ForexType.Buy, PriceType.Exceed)
     notifier.addNotify(0, CurrencyType.JPY, 0.269, ForexType.Buy, PriceType.Exceed)
     print(notifier.get_notify_currency_info(0))
     #print(notifier.get_notify_currency_info(1))

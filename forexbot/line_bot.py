@@ -15,6 +15,7 @@ class ForexNotifierLineBot(ForexSubscriber):
         self.__line_bot_api = LineBotApi(settings.config.line_access_token)
         self.__notifier = ForexNotifier()
         self.__notifier.addSubscriber(self)
+        self.__notifier.load_setting()
         self.__notify_user_ids = set()
         self.__crawler = ESunForexCrawler()
 
