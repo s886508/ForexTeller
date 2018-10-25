@@ -1,0 +1,3 @@
+[submodule "drama_come"]
+	path = drama_come
+	url = git@github.com:s886508/DramaCome.git
