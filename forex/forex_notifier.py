@@ -277,12 +277,3 @@ class ForexNotifier:
             info += self.currency_notify_dict[user_id].get_notify_info()
 
         return info
-
-if __name__ == "__main__":
-    notifier = ForexNotifier(10 * 1000)
-    notifier.addNotify(0, CurrencyType.USD, 30.9, ForexType.Buy, PriceType.Exceed)
-    #notifier.removeNotify(0, CurrencyType.USD, ForexType.Buy, PriceType.Exceed)
-    notifier.addNotify(0, CurrencyType.JPY, 0.269, ForexType.Buy, PriceType.Exceed)
-    print(notifier.get_notify_currency_info(0))
-    #print(notifier.get_notify_currency_info(1))
-    notifier.start(ESunForexCrawler())

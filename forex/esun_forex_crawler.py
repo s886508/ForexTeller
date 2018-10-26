@@ -75,11 +75,3 @@ class ESunForexCrawler(ForexCrawlerBase):
             print("Cannot match given currency.")
 
         return currency_dict
-
-
-if __name__ == "__main__":
-    crawler = ESunForexCrawler()
-    crawler.retrieveForexData(crawler.url_)
-    currency_dict = crawler.getCurrency(["美元(USD)", "日圓(JPY)"])
-    time = crawler.getEffectiveTime()
-

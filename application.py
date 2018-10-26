@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, abort
 from bot.line_bot import ForexNotifierLineBot
-from forex.setting.forex_config import *
+from forex.forex_notifier import ForexNotifier
+from forex.esun_forex_crawler import ESunForexCrawler
+from forex.setting.forex_config import ForexType, PriceType, CurrencyType
 from drama_come.drama_come.drama_crawler import JPDramaCrawler
 from drama_come.drama_come.drama_info import DramaInfo
 from bot.settings import config
@@ -19,6 +21,8 @@ app = Flask(__name__)
 
 webhook_handler = WebhookHandler(config.line_token_secret)
 line_bot = ForexNotifierLineBot()
+forex_notifier = ForexNotifier()
+forex_crawler = ESunForexCrawler()
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -42,14 +46,14 @@ def handle_message(event):
     if "啟動" == event.message.text:
         line_bot.addUserId(event.source.user_id)
         if line_bot.get_notify_user_count() > 0:
-            if line_bot.run():
+            if forex_notifier.start(forex_crawler):
                 line_bot.replyMessage(event.reply_token, "開始偵測價格與通知")
             else:
                 line_bot.replyMessage(event.reply_token, "正在偵測價格與通知")
     elif "停止" == event.message.text:
         line_bot.removeUserId(event.source.user_id)
         if line_bot.get_notify_user_count() == 0:
-            if line_bot.stop():
+            if forex_notifier.stop():
                 line_bot.replyMessage(event.reply_token, "停止偵測價格與通知")
             else:
                 line_bot.replyMessage(event.reply_token, "偵測與通知尚未啟動")
@@ -78,7 +82,7 @@ def handle_add_setting(event):
 
     if forex_type is None or currency_type is None or price_type is None or price is None:
         line_bot.replyMessage(event.reply_token, "設定格式錯誤\n範例: '設定 買入 美元 低於 30.4'")
-    elif line_bot.addNotifyCurrency(event.source.user_id, currency_type, price, forex_type, price_type):
+    elif forex_notifier.addNotify(event.source.user_id, currency_type, price, forex_type, price_type):
         line_bot.replyMessage(event.reply_token, "成功設定-通知")
     else:
         line_bot.replyMessage(event.reply_token, "設定失敗")
@@ -97,7 +101,7 @@ def handle_remove_setting(event):
 
     if forex_type is None or currency_type is None or price_type is None:
         line_bot.replyMessage(event.reply_token, "設定格式錯誤\n範例: '取消 買入 美元 低於'")
-    elif line_bot.removeNotifyCurrency(event.source.user_id, currency_type, forex_type, price_type):
+    elif forex_notifier.removeNotify(event.source.user_id, currency_type, forex_type, price_type):
         line_bot.replyMessage(event.reply_token, "成功設定-不通知")
     else:
         line_bot.replyMessage(event.reply_token, "設定失敗")
@@ -107,7 +111,8 @@ def handle_current_setting(event):
     :param
         event (object): Messages Event from Line Server
     """
-    line_bot.replyMessage(event.reply_token, line_bot.get_notify_currency_info(event.source.user_id))
+    info = forex_notifier.get_notify_currency_info(event.source.user_id)
+    line_bot.replyMessage(event.reply_token, info)
 
 def handle_jp_drame_come(event):
     """Get latest drama information and push to user.
@@ -122,7 +127,8 @@ def handle_jp_drame_come(event):
     line_bot.replyMessage(event.reply_token, str)
 
 if __name__ == "__main__":
-    #line_bot.addNotifyCurrency(CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)
-    #line_bot.run()
+    forex_notifier.addSubscriber(line_bot)
+    forex_notifier.load_setting()
+
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
-    line_bot.stop()
+    forex_notifier.stop()
