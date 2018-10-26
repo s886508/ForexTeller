@@ -1,18 +1,18 @@
 # -*- coding: utf-8 -*-
-from forexnotifier.forex_notifier import *
-from forexcrawler.esun_forex_crawler import ESunForexCrawler
-import settings.config
+from forex.forex_notifier import *
+from forex.esun_forex_crawler import ESunForexCrawler
+from .settings import config
 
 from linebot import LineBotApi
 from linebot.models import (
-    MessageEvent, TextMessage, TextSendMessage,
+    TextSendMessage,
 )
 
 class ForexNotifierLineBot(ForexSubscriber):
     """Broadcast to line users when currency price reached setting target."""
 
     def __init__(self):
-        self.__line_bot_api = LineBotApi(settings.config.line_access_token)
+        self.__line_bot_api = LineBotApi(config.line_access_token)
         self.__notifier = ForexNotifier()
         self.__notifier.addSubscriber(self)
         self.__notifier.load_setting()

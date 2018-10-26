@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
-from forexnotifier.forex_notifier import *
-from settings.forex_config import CurrencyType, ForexType, PriceType
+from forex.forex_notifier import *
+from forex.setting.forex_config import CurrencyType, ForexType, PriceType
 from test.mock.mock_forex_crawler import ForexCrawlerMock
 from test.mock.mock_forex_subscriber import ForexSubscriberMock
 

@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, abort
-from forexbot.line_bot import ForexNotifierLineBot
-from settings.forex_config import *
+from bot.line_bot import ForexNotifierLineBot
+from forex.setting.forex_config import *
 from drama_come.drama_come.drama_crawler import JPDramaCrawler
 from drama_come.drama_come.drama_info import DramaInfo
-import settings.config
+from bot.settings import config
 import os
 
 from linebot import WebhookHandler
@@ -17,7 +17,7 @@ from linebot.models import (
 
 app = Flask(__name__)
 
-webhook_handler = WebhookHandler(settings.config.line_token_secret)
+webhook_handler = WebhookHandler(config.line_token_secret)
 line_bot = ForexNotifierLineBot()
 
 @app.route("/callback", methods=['POST'])

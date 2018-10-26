@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
-from abc import ABCMeta, abstractmethod
-from settings.forex_config import CurrencyType, ForexType, PriceType
-from forexcrawler.esun_forex_crawler import ESunForexCrawler
-from datetime import timedelta, datetime
-from forexnotifier.database.forex_notify_db import ForexNotifyDB
+from abc import abstractmethod
+from .setting.forex_config import CurrencyType, ForexType, PriceType
+from .esun_forex_crawler import ESunForexCrawler
+from .database.forex_notify_db import ForexNotifyDB
+from datetime import datetime
 
 import time
 import threading

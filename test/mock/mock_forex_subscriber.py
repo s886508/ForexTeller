@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from forexnotifier.forex_notifier import ForexSubscriber
+from forex.forex_notifier import ForexSubscriber
 
 class ForexSubscriberMock(ForexSubscriber):
 

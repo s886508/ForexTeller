@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
-import pytest
 import os
-from forexnotifier.database.forex_notify_db import ForexNotifyDB
+from forex.database.forex_notify_db import ForexNotifyDB
 
 db_name = "test.json"
 

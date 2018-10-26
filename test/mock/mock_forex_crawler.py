@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from forexcrawler.forex_crawler_base import ForexCrawlerBase
+from forex.forex_crawler_base import ForexCrawlerBase
 
 class ForexCrawlerMock(ForexCrawlerBase):
 
