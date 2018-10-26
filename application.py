@@ -2,6 +2,8 @@
 from flask import Flask, request, abort
 from forexbot.line_bot import ForexNotifierLineBot
 from settings.forex_config import *
+from drama_come.drama_come.drama_crawler import JPDramaCrawler
+from drama_come.drama_come.drama_info import DramaInfo, DramaInfoHandler
 import settings.config
 import os
 
@@ -57,6 +59,8 @@ def handle_message(event):
         handle_remove_setting(event)
     elif "目前設定" in event.message.text:
         handle_current_setting(event)
+    elif "日劇" in event.message.text:
+        handle_jp_drame_come(event)
 
 
 def handle_add_setting(event):
@@ -104,6 +108,22 @@ def handle_current_setting(event):
         event (object): Messages Event from Line Server
     """
     line_bot.replyMessage(event.reply_token, line_bot.get_notify_currency_info(event.source.user_id))
+
+def handle_jp_drame_come(event):
+    """Get latest drama information and push to user.
+    :param
+        event (object): Messages Event from Line Server
+    """
+    crawler = JPDramaCrawler()
+    crawler.retrieve_url()
+    dramas = crawler.get_dramas()
+
+    handler = DramaInfoHandler()
+    for i in range(1, 10):
+        handler.add_drama(dramas[i])
+
+    str = handler.get_drama_info_string()
+    line_bot.replyMessage(event.reply_token, str)
 
 if __name__ == "__main__":
     #line_bot.addNotifyCurrency(CurrencyType.USD, 30.6, ForexType.Sell, PriceType.Exceed)
