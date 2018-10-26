@@ -3,7 +3,7 @@ from flask import Flask, request, abort
 from forexbot.line_bot import ForexNotifierLineBot
 from settings.forex_config import *
 from drama_come.drama_come.drama_crawler import JPDramaCrawler
-from drama_come.drama_come.drama_info import DramaInfo, DramaInfoHandler
+from drama_come.drama_come.drama_info import DramaInfo
 import settings.config
 import os
 
@@ -118,11 +118,7 @@ def handle_jp_drame_come(event):
     crawler.retrieve_url()
     dramas = crawler.get_dramas()
 
-    handler = DramaInfoHandler()
-    for i in range(1, 10):
-        handler.add_drama(dramas[i])
-
-    str = handler.get_drama_info_string()
+    str = DramaInfo.get_info_str(dramas)
     line_bot.replyMessage(event.reply_token, str)
 
 if __name__ == "__main__":
