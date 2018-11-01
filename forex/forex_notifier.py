@@ -183,6 +183,7 @@ class ForexNotifier:
         Remove set notify currency.
 
         Args:
+            user_id (str): Line user id to send notify.
             currency_type (CurrencyType): Currency type to remove target price. eg. 美元(USD)
             forex_type (ForexType): The price for buying or selling.
             price_type (PriceType): The type indicates notify when exceed or below target price.

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from flask import Flask, request, abort
 from bot.line_bot import ForexNotifierLineBot
+from bot.settings import config
 from forex.forex_notifier import ForexNotifier
 from forex.esun_forex_crawler import ESunForexCrawler
 from forex.setting.forex_config import ForexType, PriceType, CurrencyType
-from drama_come.drama_come.drama_crawler import JPDramaCrawler
-from drama_come.drama_come.drama_info import DramaInfo
-from bot.settings import config
+from drama_come.drama_crawler import JPDramaCrawler
+from drama_come.drama_info import DramaInfo
 import os
 
 from linebot import WebhookHandler
