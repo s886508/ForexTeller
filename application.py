@@ -3,6 +3,7 @@ from flask import Flask, request, abort
 from bot.line_bot import ForexNotifierLineBot
 from bot.settings import config
 from forex.forex_notifier import ForexNotifier
+from forex.database.forex_notify_db import ForexNotifyDB
 from forex.esun_forex_crawler import ESunForexCrawler
 from forex.setting.forex_config import ForexType, PriceType, CurrencyType
 from drama_come.drama_crawler import JPDramaCrawler
@@ -128,6 +129,7 @@ def handle_jp_drame_come(event):
 
 if __name__ == "__main__":
     forex_notifier.addSubscriber(line_bot)
+    forex_notifier.set_db(ForexNotifyDB())
     forex_notifier.load_setting()
 
     app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))

@@ -103,10 +103,8 @@ class ForexNotifier:
         self.__lock = threading.Lock()
         self.__db = None
 
-    def __get_db(self):
-        if self.__db is None:
-            self.__db = ForexNotifyDB()
-        return self.__db
+    def set_db(self, db):
+        self.__db = db
 
     def load_setting(self):
         """ Load previous saved settings from database. """
@@ -114,7 +112,10 @@ class ForexNotifier:
             print("The notify setting has already existed.")
             return False
 
-        records = self.__get_db().get_all_data()
+        if self.__db is None:
+            return False
+
+        records = self.__db.get_all_data()
         for r in records:
             forex_notify_info = ForexNotifyInfo()
             forex_notify_info.add_notify(r["cond"], float(r["price"]))
@@ -172,7 +173,8 @@ class ForexNotifier:
         forex_notify_info.add_notify(key, currency_price)
 
         self.currency_notify_dict[user_id] = forex_notify_info
-        self.__get_db().add(user_id, key, currency_price)
+        if self.__db is not None:
+            self.__db.add(user_id, key, currency_price)
 
         self.__lock.release()
 
@@ -205,7 +207,8 @@ class ForexNotifier:
         self.__lock.acquire()
 
         self.currency_notify_dict[user_id].remove_notify(key)
-        self.__get_db().remove(user_id, key)
+        if self.__db is not None:
+            self.__db.remove(user_id, key)
 
         self.__lock.release()
         print("通知已移除: %s" % (key))
