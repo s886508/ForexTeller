@@ -4,3 +4,4 @@ pytest
 line-bot-sdk
 flask
 tinydb
+jieba
