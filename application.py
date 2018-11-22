@@ -29,7 +29,7 @@ forex_crawler = ESunForexCrawler()
 
 gan_hua_dict = GanHuaDict()
 gan_hua_dict.load_from_file("data/ganhua_dict.json")
-gan_hua_expert = GanHuaExpert(JaccardCompareStrategy(), dict)
+gan_hua_expert = GanHuaExpert(JaccardCompareStrategy(), gan_hua_dict)
 
 @app.route("/")
 def home():
