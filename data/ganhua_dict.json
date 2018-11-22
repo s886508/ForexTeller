@@ -1,0 +1,326 @@
+[
+  {
+    "id" : 0,
+    "spokesman" : "王世堅",
+    "position" : "議員",
+    "message" : "香蕉皮煮過以後像剝皮辣椒"
+  },
+  {
+    "id" : 1,
+    "spokesman" : "龔明鑫",
+    "position" : "經濟部次長",
+    "message" : "中火對區域空氣品質的影響微乎其微"
+  },
+  {
+    "id" : 2,
+    "spokesman" : "謝長廷",
+    "position" : "駐日代表",
+    "message" : "台灣漁民比較活潑，神出鬼沒難保護"
+  },
+  {
+    "id" : 3,
+    "spokesman" : "何志偉",
+    "position" : "議員",
+    "message" : "不淹水是不可能的，倒不如在水來的時候，好好的淹"
+  },
+  {
+    "id" : 4,
+    "spokesman" : "吳音寧",
+    "position" : "北農總經理",
+    "message" : "我的薪水一年不到250萬，只有248萬"
+  },
+  {
+    "id" : 5,
+    "spokesman" : "賀陳旦",
+    "position" : "交通部長",
+    "message" : "塞車就當看風景"
+  },
+  {
+    "id" : 6,
+    "spokesman" : "蔡英文",
+    "position" : "總統",
+    "message" : "勞工永遠是，民進黨心裡最柔軟的那一塊"
+  },
+  {
+    "id" : 7,
+    "spokesman" : "謝長廷",
+    "position" : "駐日代表",
+    "message" : "台灣總不缺電，但電從哪裡來，還不知道"
+  },
+  {
+    "id" : 8,
+    "spokesman" : "陳水扁",
+    "position" : "前總統",
+    "message" : "阿扁錯了嗎?阿扁錯了嗎?難道阿扁錯了嗎?"
+  },
+  {
+    "id" : 9,
+    "spokesman" : "邱議瑩",
+    "position" : "立法委員",
+    "message" : "那些都是放錄音帶的啦，抗議還那麼不認真，跟我們當年走街頭不一樣"
+  },
+  {
+    "id" : 10,
+    "spokesman" : "許銘春",
+    "position" : "勞動部長",
+    "message" : "不知道台灣八成勞工，月薪沒5萬"
+  },
+  {
+    "id" : 11,
+    "spokesman" : "蔡英文",
+    "position" : "總統",
+    "message" : "民進黨是一個...古意的政黨"
+  },
+  {
+    "id" : 12,
+    "spokesman" : "賴清德",
+    "position" : "行政院長",
+    "message" : "去年台灣至少有五成人有加薪，電價調整不會造成很大影響"
+  },
+  {
+    "id" : 13,
+    "spokesman" : "蔡英文",
+    "position" : "總統",
+    "message" : "對於現役軍人的退休方案，會比現在的制度好很多。很多年輕人，都願意當軍人"
+  },
+  {
+    "id" : 14,
+    "spokesman" : "賴清德",
+    "position" : "行政院長",
+    "message" : "台灣勞工平均薪資48K，勞工就職談薪資，就有根據向資方要求「你給的薪水太低了」「有一個比較好的條件」"
+  },
+  {
+    "id" : 15,
+    "spokesman" : "陳菊",
+    "position" : "總統府秘書長",
+    "message" : "新北市機車全台最多，汙染程度超越深澳發電廠"
+  },
+  {
+    "id" : 16,
+    "spokesman" : "王定宇",
+    "position" : "立法委員",
+    "message" : "蚊子會太登革熱阿茲卡病毒，想辦法藏孑孓去，再讓劉謙變入會場，如果WHA把台灣屏除在外，讓牠飛一飛，看咬誰，誰倒楣"
+  },
+  {
+    "id" : 17,
+    "spokesman" : "張小月",
+    "position" : "前陸委會",
+    "message" : "兩岸已讀不回，生命會自己找到出路"
+  },
+  {
+    "id" : 18,
+    "spokesman" : "蔡英文",
+    "position" : "總統",
+    "message" : "台灣經濟目前處在過去20年來的最好狀態"
+  },
+  {
+    "id" : 19,
+    "spokesman" : "賴清德",
+    "position" : "行政院長",
+    "message" : "批評的人，去當上帝"
+  },
+  {
+    "id" : 20,
+    "spokesman" : "徐國勇",
+    "position" : "內政部長",
+    "message" : "淹水就像感冒一樣，沒有藥可以讓你永遠不感冒"
+  },
+  {
+    "id" : 21,
+    "spokesman" : "邱議瑩",
+    "position" : "立法委員",
+    "message" : "你們以為是台北跟高雄嗎?"
+  },
+  {
+    "id" : 22,
+    "spokesman" : "陳時中",
+    "position" : "衛福部長",
+    "message" : "看到育兒百寶箱，人民就想生"
+  },
+  {
+    "id" : 23,
+    "spokesman" : "林岱樺",
+    "position" : "立法委員",
+    "message" : "放生動物並非「棄養」，只是沒辦法養"
+  },
+  {
+    "id" : 24,
+    "spokesman" : "林萬億",
+    "position" : "政務委員",
+    "message" : "一例一休此次修法，勞權不但沒倒退30年，反而迎頭趕上世界潮流"
+  },
+  {
+    "id" : 25,
+    "spokesman" : "蔡宜珊",
+    "position" : "議員參選人",
+    "message" : "給設計師20K月薪算很高"
+  },
+  {
+    "id" : 26,
+    "spokesman" : "蔡易餘",
+    "position" : "立法委員",
+    "message" : "我們把陸配和外配作差別待遇，剛剛好！而已啦！"
+  },
+  {
+    "id" : 27,
+    "spokesman" : "蘇貞昌",
+    "position" : "前行政院長",
+    "message" : "一切為了救苦救難，保生大帝會保佑"
+  },
+  {
+    "id" : 28,
+    "spokesman" : "徐國勇",
+    "position" : "前發言人",
+    "message" : "行政中立法只針對文官、事務官"
+  },
+  {
+    "id" : 29,
+    "spokesman" : "姚文智",
+    "position" : "立法委員",
+    "message" : "綠，就是台灣價值"
+  },
+  {
+    "id" : 30,
+    "spokesman" : "林佳龍",
+    "position" : "台中市長",
+    "message" : "台中市是空汙防制最成功的地方政府"
+  },
+  {
+    "id" : 31,
+    "spokesman" : "洪耀福",
+    "position" : "秘書長",
+    "message" : "空汙、核食都是假議題"
+  },
+  {
+    "id" : 32,
+    "spokesman" : "陳美伶",
+    "position" : "國發會主委",
+    "message" : "德國沒裝冷氣，室內不會熱！"
+  },
+  {
+    "id" : 33,
+    "spokesman" : "陳師孟",
+    "position" : "監察委員",
+    "message" : "陳水扁沒有貪汙"
+  },
+  {
+    "id" : 34,
+    "spokesman" : "蔡英文",
+    "position" : "總統",
+    "message" : "你不必跟我說啊！你去跟你老闆說嘛！這個政府，公親變事主，你們要自立自強啊！"
+  },
+  {
+    "id" : 35,
+    "spokesman" : "賴清德",
+    "position" : "行政院長",
+    "message" : "年輕人可能剛出社會收入不高，自然也想加班"
+  },
+  {
+    "id" : 36,
+    "spokesman" : "林聰賢",
+    "position" : "農委會主委",
+    "message" : "不覺得我都到產地視察，曬得很黑嗎?"
+  },
+  {
+    "id" : 37,
+    "spokesman" : "林靜儀",
+    "position" : "立法委員",
+    "message" : "晚上10點後限電，省能源又可解決少子化"
+  },
+  {
+    "id" : 38,
+    "spokesman" : "吳茂昆",
+    "position" : "前教育部長",
+    "message" : "學術沒有真正的民主"
+  },
+  {
+    "id" : 39,
+    "spokesman" : "蔡英文",
+    "position" : "總統",
+    "message" : "台灣的假真的休太多了"
+  },
+  {
+    "id" : 40,
+    "spokesman" : "賴清德",
+    "position" : "行政院長",
+    "message" : "深澳電廠用的是乾淨的煤"
+  },
+  {
+    "id" : 41,
+    "spokesman" : "蔡英文",
+    "position" : "總統",
+    "message" : "我可以講話，你們不能發問"
+  },
+  {
+    "id" : 42,
+    "spokesman" : "賴清德",
+    "position" : "行政院長",
+    "message" : "台灣的電不是不夠用，而是剩不夠多"
+  },
+  {
+    "id" : 43,
+    "spokesman" : "徐國勇",
+    "position" : "內政部長",
+    "message" : "為減輕年輕人購屋壓力，青年購屋自備款僅需一成"
+  },
+  {
+    "id" : 44,
+    "spokesman" : "管碧玲",
+    "position" : "立法委員",
+    "message" : "得登革熱才是血統純正高雄人"
+  },
+  {
+    "id" : 45,
+    "spokesman" : "賴清德",
+    "position" : "行政院長",
+    "message" : "照服員薪水低，就當作是「做功德」"
+  },
+  {
+    "id" : 46,
+    "spokesman" : "蔡英文",
+    "position" : "總統",
+    "message" : "台灣物價穩定生活不差，民眾對執政成績開始有感"
+  },
+  {
+    "id" : 47,
+    "spokesman" : "賴清德",
+    "position" : "行政院長",
+    "message" : "核二廠2號機是再轉，不是重啟"
+  },
+  {
+    "id" : 48,
+    "spokesman" : "林聰賢",
+    "position" : "農委會主席",
+    "message" : "南部每公斤價格都30、40塊了，是抗議太高價嗎?"
+  },
+  {
+    "id" : 49,
+    "spokesman" : "徐國勇",
+    "position" : "前發言人",
+    "message" : "有7休1就能積假去玩"
+  },
+  {
+    "id" : 50,
+    "spokesman" : "林佳龍",
+    "position" : "台中市長",
+    "message" : "台中不再生產「慶記」，治安變好，如好空氣"
+  },
+  {
+    "id" : 51,
+    "spokesman" : "林騰蛟",
+    "position" : "教育部次長",
+    "message" : "現在查無違法，不代表後面沒有查出違法"
+  },
+  {
+    "id" : 52,
+    "spokesman" : "蕭明仁",
+    "position" : "後援會會長",
+    "message" : "台灣的勞工幾乎沒有過勞死，如果有的話，可能是因為勞工本身就有病"
+  },
+  {
+    "id" : 53,
+    "spokesman" : "吳秉叡",
+    "position" : "立法委員",
+    "message" : "反對這個法案的人，將來選舉可以不要支持民進黨"
+  }
+]

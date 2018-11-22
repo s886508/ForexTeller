@@ -1,3 +1,6 @@
 [submodule "drama_come"]
 	path = drama_come
 	url = https://github.com/s886508/drama_come.git
+[submodule "jiang_gan_hua"]
+	path = jiang_gan_hua
+	url = https://github.com/s886508/jiang_gan_hua.git

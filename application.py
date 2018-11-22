@@ -8,7 +8,9 @@ from forex.esun_forex_crawler import ESunForexCrawler
 from forex.setting.forex_config import ForexType, PriceType, CurrencyType
 from drama_come.drama_crawler import JPDramaCrawler
 from drama_come.drama_info import DramaInfo
-import os
+from jiang_gan_hua.ganhua_expert import GanHuaExpert, GanHuaDict
+from jiang_gan_hua.text_compare.strategy import JaccardCompareStrategy
+import os, random
 
 from linebot import WebhookHandler
 from linebot.exceptions import (
@@ -24,6 +26,14 @@ webhook_handler = WebhookHandler(config.line_token_secret)
 line_bot = ForexNotifierLineBot()
 forex_notifier = ForexNotifier()
 forex_crawler = ESunForexCrawler()
+
+gan_hua_dict = GanHuaDict()
+gan_hua_dict.load_from_file("data/ganhua_dict.json")
+gan_hua_expert = GanHuaExpert(JaccardCompareStrategy(), dict)
+
+@app.route("/")
+def home():
+    return "Hello My Friend ~ :)"
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -66,6 +76,8 @@ def handle_message(event):
         handle_current_setting(event)
     elif "日劇" in event.message.text:
         handle_jp_drame_come(event)
+    else: #講幹話
+        handle_jiang_gan_hua(event)
 
 
 def handle_add_setting(event):
@@ -126,6 +138,14 @@ def handle_jp_drame_come(event):
 
     str = DramaInfo.get_info_str(dramas)
     line_bot.replyMessage(event.reply_token, str)
+
+def handle_jiang_gan_hua(event):
+    """Reply most similar gan hua from dictionary, otherwise a random pick.
+    :param event (object): Messages Event from Line Server
+    """
+    gan_hua_list = gan_hua_expert.query_similiar_from_dict(event.message.text, 10)
+    index = random.randint(0, 9)
+    line_bot.replyMessage(event.reply_token, gan_hua_list[index])
 
 if __name__ == "__main__":
     forex_notifier.addSubscriber(line_bot)
