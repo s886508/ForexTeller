@@ -5,3 +5,4 @@ line-bot-sdk
 flask
 tinydb
 jieba
+distance
