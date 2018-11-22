@@ -144,8 +144,8 @@ def handle_jiang_gan_hua(event):
     :param event (object): Messages Event from Line Server
     """
     gan_hua_list = gan_hua_expert.query_similiar_from_dict(event.message.text, 10)
-    index = random.randint(0, 9)
-    line_bot.replyMessage(event.reply_token, gan_hua_list[index])
+    gan_hua = gan_hua_list[random.randint(0, 9)][0]
+    line_bot.replyMessage(event.reply_token, gan_hua)
 
 if __name__ == "__main__":
     forex_notifier.addSubscriber(line_bot)
